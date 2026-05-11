@@ -109,14 +109,14 @@ function detectCommune(text: string): number | null {
 
 async function main() {
   let totalIngested = 0
-  let page = 0
+  let page = 1
 
   console.log("Fetching events from visit.brussels...")
 
-  while (page < MAX_PAGES) {
+  while (page <= MAX_PAGES) {
     const data = await fetchPage(page)
 
-    if (page === 0) {
+    if (page === 1) {
       console.log(`  Total available: ${data.results} events across ${data.totalPages} pages`)
     }
 
@@ -181,6 +181,7 @@ async function main() {
     page++
 
     if (page >= data.totalPages) break
+
   }
 
   console.log(`\nDone. Ingested ${totalIngested} events.`)

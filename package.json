@@ -1,6 +1,7 @@
 {
   "name": "brux",
   "private": true,
+  "packageManager": "npm@10.0.0",
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "turbo dev",

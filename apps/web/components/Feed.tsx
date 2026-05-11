@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import type { ItemType } from "../app/page"
+import type { ItemType, DateRange } from "../lib/filters"
+import { getDateBounds } from "../lib/filters"
 
 interface FeedItem {
   id: string
@@ -17,19 +18,31 @@ interface FeedItem {
 interface Props {
   activeTypes: ItemType[]
   communeId: number | null
+  dateRange: DateRange
   typeColors: Record<ItemType, string>
 }
 
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 60) return `${mins}m ago`
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diff = date.getTime() - now.getTime()
+  const diffAbs = Math.abs(diff)
+  const mins = Math.floor(diffAbs / 60000)
   const hours = Math.floor(mins / 60)
+  const days = Math.floor(hours / 24)
+
+  if (diff > 0) {
+    if (days === 0) return "today"
+    if (days === 1) return "tomorrow"
+    if (days < 7) return `in ${days}d`
+    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+  }
+  if (mins < 60) return `${mins}m ago`
   if (hours < 24) return `${hours}h ago`
-  return `${Math.floor(hours / 24)}d ago`
+  return `${days}d ago`
 }
 
-export default function Feed({ activeTypes, communeId, typeColors }: Props) {
+export default function Feed({ activeTypes, communeId, dateRange, typeColors }: Props) {
   const [feedItems, setFeedItems] = useState<FeedItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -38,6 +51,9 @@ export default function Feed({ activeTypes, communeId, typeColors }: Props) {
     const params = new URLSearchParams()
     activeTypes.forEach((t) => params.append("type", t))
     if (communeId) params.set("commune", String(communeId))
+    const { dateFrom, dateTo } = getDateBounds(dateRange, activeTypes)
+    if (dateFrom) params.set("dateFrom", dateFrom)
+    if (dateTo) params.set("dateTo", dateTo)
 
     fetch(`/api/items?${params}`)
       .then((r) => r.json())
@@ -45,7 +61,7 @@ export default function Feed({ activeTypes, communeId, typeColors }: Props) {
         setFeedItems(data)
         setLoading(false)
       })
-  }, [activeTypes.join(","), communeId])
+  }, [activeTypes.join(","), communeId, dateRange])
 
   if (loading) {
     return (
@@ -74,7 +90,7 @@ export default function Feed({ activeTypes, communeId, typeColors }: Props) {
                 {item.communeName ?? "Brussels"}
               </span>
               <span className="text-xs text-gray-300">·</span>
-              <span className="text-xs text-gray-400">{timeAgo(item.publishedAt)}</span>
+              <span className="text-xs text-gray-400">{formatDate(item.publishedAt)}</span>
               <span className="text-xs text-gray-300">·</span>
               <span className="text-xs text-gray-400">{item.sourceName}</span>
             </div>
