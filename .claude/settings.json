@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s *)",
+      "Bash(docker compose *)",
+      "Bash(npx tsc *)",
+      "mcp__sifi-dwh-mcp__execute_sql",
+      "mcp__sifi-dwh-mcp__list_tables",
+      "mcp__sifi-dwh-mcp__get_table_schema",
+      "mcp__sifi-dwh-mcp__validate_query"
+    ]
+  }
+}
