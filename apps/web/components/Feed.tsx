@@ -44,7 +44,15 @@ function formatDate(dateStr: string): string {
 
 export default function Feed({ activeTypes, communeId, dateRange, typeColors }: Props) {
   const [feedItems, setFeedItems] = useState<FeedItem[]>([])
+  const [alertIds, setAlertIds] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch("/api/alerts")
+      .then((r) => r.json())
+      .then((data: FeedItem[]) => setAlertIds(new Set(data.map((a) => a.id))))
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     setLoading(true)
@@ -76,43 +84,56 @@ export default function Feed({ activeTypes, communeId, dateRange, typeColors }: 
       {feedItems.length === 0 ? (
         <div className="p-8 text-center text-gray-400">No items found</div>
       ) : (
-        feedItems.map((item) => (
-          <article
-            key={item.id}
-            className="bg-white border-b border-gray-100 px-4 py-3 hover:bg-gray-50 transition-colors"
-          >
-            <div className="flex items-center gap-2 mb-1">
-              <span
-                className="w-2 h-2 rounded-full flex-shrink-0"
-                style={{ backgroundColor: typeColors[item.type as ItemType] ?? "#ccc" }}
-              />
-              <span className="text-xs text-gray-400 uppercase tracking-wide">
-                {item.communeName ?? "Brussels"}
-              </span>
-              <span className="text-xs text-gray-300">·</span>
-              <span className="text-xs text-gray-400">{formatDate(item.publishedAt)}</span>
-              <span className="text-xs text-gray-300">·</span>
-              <span className="text-xs text-gray-400">{item.sourceName}</span>
-            </div>
-
-            {item.sourceUrl ? (
-              <a
-                href={item.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-sm text-gray-900 hover:underline leading-snug block mb-1"
+        [...feedItems]
+          .sort((a, b) => {
+            const aAlert = alertIds.has(a.id) ? 1 : 0
+            const bAlert = alertIds.has(b.id) ? 1 : 0
+            return bAlert - aAlert
+          })
+          .map((item) => {
+            const isAlert = alertIds.has(item.id)
+            return (
+              <article
+                key={item.id}
+                className={`border-b px-4 py-3 transition-colors ${
+                  isAlert
+                    ? "bg-red-50 border-red-100 border-l-4 border-l-red-500 hover:bg-red-100"
+                    : "bg-white border-gray-100 hover:bg-gray-50"
+                }`}
               >
-                {item.title}
-              </a>
-            ) : (
-              <p className="font-medium text-sm text-gray-900 leading-snug mb-1">{item.title}</p>
-            )}
+                <div className="flex items-center gap-2 mb-1">
+                  <span
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: isAlert ? "#ef4444" : (typeColors[item.type as ItemType] ?? "#ccc") }}
+                  />
+                  <span className={`text-xs uppercase tracking-wide ${isAlert ? "text-red-500 font-semibold" : "text-gray-400"}`}>
+                    {isAlert ? "Strike alert" : (item.communeName ?? "Brussels")}
+                  </span>
+                  <span className="text-xs text-gray-300">·</span>
+                  <span className="text-xs text-gray-400">{formatDate(item.publishedAt)}</span>
+                  <span className="text-xs text-gray-300">·</span>
+                  <span className="text-xs text-gray-400">{item.sourceName}</span>
+                </div>
 
-            {item.summary && (
-              <p className="text-xs text-gray-500 line-clamp-2">{item.summary}</p>
-            )}
-          </article>
-        ))
+                {item.sourceUrl ? (
+                  <a
+                    href={item.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`font-medium text-sm hover:underline leading-snug block mb-1 ${isAlert ? "text-red-900" : "text-gray-900"}`}
+                  >
+                    {item.title}
+                  </a>
+                ) : (
+                  <p className={`font-medium text-sm leading-snug mb-1 ${isAlert ? "text-red-900" : "text-gray-900"}`}>{item.title}</p>
+                )}
+
+                {item.summary && (
+                  <p className="text-xs text-gray-500 line-clamp-2">{item.summary}</p>
+                )}
+              </article>
+            )
+          })
       )}
     </div>
   )

@@ -24,6 +24,7 @@ export default function MapView({ activeTypes, selectedCommune, onSelectCommune,
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const metroIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const itemsAbortRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -41,7 +42,9 @@ export default function MapView({ activeTypes, selectedCommune, onSelectCommune,
       mapRef.current = map
 
       map.on("load", () => {
-        fetchAndRenderItems(map, activeTypes, dateRange, typeColors)
+        itemsAbortRef.current?.abort()
+        itemsAbortRef.current = new AbortController()
+        fetchAndRenderItems(map, activeTypes, dateRange, typeColors, itemsAbortRef.current.signal)
       })
 
       map.on("click", "commune-fill", (e: any) => {
@@ -60,7 +63,9 @@ export default function MapView({ activeTypes, selectedCommune, onSelectCommune,
   useEffect(() => {
     const map = mapRef.current
     if (!map || !map.isStyleLoaded()) return
-    fetchAndRenderItems(map, activeTypes, dateRange, typeColors)
+    itemsAbortRef.current?.abort()
+    itemsAbortRef.current = new AbortController()
+    fetchAndRenderItems(map, activeTypes, dateRange, typeColors, itemsAbortRef.current.signal)
   }, [activeTypes.join(","), dateRange])
 
   // Metro layer: initial load + polling
@@ -108,7 +113,8 @@ async function fetchAndRenderItems(
   map: any,
   activeTypes: ItemType[],
   dateRange: DateRange,
-  typeColors: Record<string, string>
+  typeColors: Record<string, string>,
+  signal?: AbortSignal
 ) {
   const params = new URLSearchParams()
   activeTypes.forEach((t) => params.append("type", t))
@@ -117,8 +123,10 @@ async function fetchAndRenderItems(
   if (dateFrom) params.set("dateFrom", dateFrom)
   if (dateTo) params.set("dateTo", dateTo)
 
-  const res = await fetch(`/api/items?${params}`)
+  const res = await fetch(`/api/items?${params}`, { signal })
+  if (signal?.aborted) return
   const data = await res.json()
+  if (signal?.aborted) return
 
   const features = data
     .filter((item: any) => item.lat && item.lng)

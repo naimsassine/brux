@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { db, items, communes } from "@brux/db"
-import { eq, desc, inArray, and, gte, lte } from "drizzle-orm"
+import { eq, desc, inArray, and, gte, lte, or } from "drizzle-orm"
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
@@ -13,10 +13,29 @@ export async function GET(req: NextRequest) {
   const offset = Number(searchParams.get("offset") ?? 0)
 
   const conditions = []
-  if (types.length > 0) conditions.push(inArray(items.type, types))
   if (communeId) conditions.push(eq(items.communeId, Number(communeId)))
-  if (dateFrom) conditions.push(gte(items.publishedAt, new Date(dateFrom)))
-  if (dateTo) conditions.push(lte(items.publishedAt, new Date(dateTo)))
+
+  if (types.length > 0) {
+    const nonEventTypes = types.filter((t): t is "news" | "roadwork" => t !== "event")
+    const hasEvents = types.includes("event")
+    const hasDates = !!dateFrom || !!dateTo
+
+    if (hasDates && hasEvents && nonEventTypes.length > 0) {
+      // Date window applies only to events — news/roadworks are always shown by recency
+      const eventConds = [
+        eq(items.type, "event" as const),
+        ...(dateFrom ? [gte(items.publishedAt, new Date(dateFrom))] : []),
+        ...(dateTo ? [lte(items.publishedAt, new Date(dateTo))] : []),
+      ]
+      conditions.push(or(and(...eventConds), inArray(items.type, nonEventTypes)))
+    } else {
+      conditions.push(inArray(items.type, types))
+      if (hasDates && hasEvents) {
+        if (dateFrom) conditions.push(gte(items.publishedAt, new Date(dateFrom)))
+        if (dateTo) conditions.push(lte(items.publishedAt, new Date(dateTo)))
+      }
+    }
+  }
 
   const rows = await db
     .select({
