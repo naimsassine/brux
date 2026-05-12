@@ -4,7 +4,7 @@ import { useState } from "react"
 import Feed from "../components/Feed"
 import MapView from "../components/MapView"
 import FilterBar from "../components/FilterBar"
-import { ITEM_TYPES, type ItemType, type DateRange } from "../lib/filters"
+import { type ItemType, type DateRange } from "../lib/filters"
 
 export type { ItemType, DateRange }
 
@@ -15,18 +15,10 @@ const TYPE_COLORS: Record<ItemType, string> = {
 }
 
 export default function Home() {
-  const [activeTypes, setActiveTypes] = useState<Set<ItemType>>(new Set(ITEM_TYPES))
+  const [activeTab, setActiveTab] = useState<ItemType>("news")
   const [selectedCommune, setSelectedCommune] = useState<number | null>(null)
-  const [dateRange, setDateRange] = useState<DateRange>("week")
+  const [dateRange, setDateRange] = useState<DateRange>("month")
   const [showMetro, setShowMetro] = useState(true)
-
-  const toggleType = (type: ItemType) => {
-    setActiveTypes((prev) => {
-      const next = new Set(prev)
-      next.has(type) ? next.delete(type) : next.add(type)
-      return next
-    })
-  }
 
   return (
     <div className="flex flex-col h-screen">
@@ -44,8 +36,8 @@ export default function Home() {
       </header>
 
       <FilterBar
-        activeTypes={activeTypes}
-        onToggle={toggleType}
+        activeTab={activeTab}
+        onTab={setActiveTab}
         typeColors={TYPE_COLORS}
         dateRange={dateRange}
         onDateRange={setDateRange}
@@ -55,16 +47,14 @@ export default function Home() {
 
       <div className="flex flex-1 overflow-hidden">
         <Feed
-          activeTypes={[...activeTypes]}
+          type={activeTab}
           communeId={selectedCommune}
           dateRange={dateRange}
           typeColors={TYPE_COLORS}
         />
         <MapView
-          activeTypes={[...activeTypes]}
           selectedCommune={selectedCommune}
           onSelectCommune={setSelectedCommune}
-          dateRange={dateRange}
           typeColors={TYPE_COLORS}
           showMetro={showMetro}
         />

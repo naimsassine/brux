@@ -1,8 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import type { ItemType, DateRange } from "../lib/filters"
-import { getDateBounds } from "../lib/filters"
+import type { ItemType } from "../lib/filters"
 
 interface MetroLine {
   id: string
@@ -12,19 +11,36 @@ interface MetroLine {
 }
 
 interface Props {
-  activeTypes: ItemType[]
   selectedCommune: number | null
   onSelectCommune: (id: number | null) => void
-  dateRange: DateRange
   typeColors: Record<ItemType, string>
   showMetro: boolean
 }
 
-export default function MapView({ activeTypes, selectedCommune, onSelectCommune, dateRange, typeColors, showMetro }: Props) {
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+}
+
+function buildPopupHtml(props: any, typeColors: Record<string, string>): string {
+  const color = typeColors[props.type] ?? "#888"
+  const meta = [props.type, props.communeName].filter(Boolean).join(" · ")
+  return `
+    <div style="font-family:system-ui,-apple-system,sans-serif;max-width:240px;padding:2px 4px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${color};margin-bottom:5px">${escapeHtml(meta)}</div>
+      <div style="font-size:13px;font-weight:500;line-height:1.4;color:#111;margin-bottom:3px">${escapeHtml(props.title ?? "")}</div>
+      <div style="font-size:11px;color:#9ca3af">${escapeHtml(props.sourceName ?? "")}</div>
+    </div>
+  `
+}
+
+export default function MapView({ selectedCommune, onSelectCommune, typeColors, showMetro }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const metroIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const itemsAbortRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -42,9 +58,27 @@ export default function MapView({ activeTypes, selectedCommune, onSelectCommune,
       mapRef.current = map
 
       map.on("load", () => {
-        itemsAbortRef.current?.abort()
-        itemsAbortRef.current = new AbortController()
-        fetchAndRenderItems(map, activeTypes, dateRange, typeColors, itemsAbortRef.current.signal)
+        fetchAndRenderItems(map, typeColors)
+
+        // Hover popup
+        let activePopup: any = null
+
+        map.on("mouseenter", "items-circles", (e: any) => {
+          if (!e.features?.length) return
+          map.getCanvas().style.cursor = "pointer"
+          const props = e.features[0].properties
+          activePopup?.remove()
+          activePopup = new maplibre.Popup({ closeButton: false, offset: 8, maxWidth: "280px" })
+            .setLngLat(e.lngLat)
+            .setHTML(buildPopupHtml(props, typeColors))
+            .addTo(map)
+        })
+
+        map.on("mouseleave", "items-circles", () => {
+          map.getCanvas().style.cursor = ""
+          activePopup?.remove()
+          activePopup = null
+        })
       })
 
       map.on("click", "commune-fill", (e: any) => {
@@ -58,15 +92,6 @@ export default function MapView({ activeTypes, selectedCommune, onSelectCommune,
       mapRef.current = null
     }
   }, [])
-
-  // Re-render civic items when filters change
-  useEffect(() => {
-    const map = mapRef.current
-    if (!map || !map.isStyleLoaded()) return
-    itemsAbortRef.current?.abort()
-    itemsAbortRef.current = new AbortController()
-    fetchAndRenderItems(map, activeTypes, dateRange, typeColors, itemsAbortRef.current.signal)
-  }, [activeTypes.join(","), dateRange])
 
   // Metro layer: initial load + polling
   useEffect(() => {
@@ -86,7 +111,6 @@ export default function MapView({ activeTypes, selectedCommune, onSelectCommune,
       if (map?.isStyleLoaded()) fetchAndRenderMetro(map)
     }
 
-    // Wait for map to be ready on first load
     if (!map) {
       const wait = setInterval(() => {
         if (mapRef.current?.isStyleLoaded()) {
@@ -109,24 +133,12 @@ export default function MapView({ activeTypes, selectedCommune, onSelectCommune,
   return <div ref={containerRef} className="flex-1" />
 }
 
-async function fetchAndRenderItems(
-  map: any,
-  activeTypes: ItemType[],
-  dateRange: DateRange,
-  typeColors: Record<string, string>,
-  signal?: AbortSignal
-) {
+async function fetchAndRenderItems(map: any, typeColors: Record<string, string>) {
   const params = new URLSearchParams()
-  activeTypes.forEach((t) => params.append("type", t))
   params.set("limit", "200")
-  const { dateFrom, dateTo } = getDateBounds(dateRange, activeTypes)
-  if (dateFrom) params.set("dateFrom", dateFrom)
-  if (dateTo) params.set("dateTo", dateTo)
 
-  const res = await fetch(`/api/items?${params}`, { signal })
-  if (signal?.aborted) return
+  const res = await fetch(`/api/items?${params}`)
   const data = await res.json()
-  if (signal?.aborted) return
 
   const features = data
     .filter((item: any) => item.lat && item.lng)
@@ -190,7 +202,6 @@ function clearMetroLayers(map: any) {
 }
 
 function renderMetroLayers(map: any, lines: MetroLine[]) {
-  // Build line GeoJSON
   const lineFeatures = lines.map((line) => ({
     type: "Feature",
     geometry: {
@@ -200,7 +211,6 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
     properties: { lineId: line.id, color: line.color },
   }))
 
-  // Build vehicle GeoJSON — skip any features with missing coordinates
   const vehicleFeatures = lines.flatMap((line) =>
     line.vehicles
       .filter((v) => v.lat != null && v.lng != null)
@@ -214,9 +224,6 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
   const linesGeojson = { type: "FeatureCollection", features: lineFeatures }
   const vehiclesGeojson = { type: "FeatureCollection", features: vehicleFeatures }
 
-  console.log("[metro] renderMetroLayers — vehicles total:", vehicleFeatures.length, "| sources exist:", !!map.getSource("metro-lines"), !!map.getSource("metro-vehicles"), "| layers exist:", !!map.getLayer("metro-vehicles"))
-
-  // Update existing sources if already initialised
   if (map.getSource("metro-lines")) {
     map.getSource("metro-lines").setData(linesGeojson)
     if (map.getSource("metro-vehicles")) {
@@ -228,7 +235,6 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
   map.addSource("metro-lines", { type: "geojson", data: linesGeojson })
   map.addSource("metro-vehicles", { type: "geojson", data: vehiclesGeojson })
 
-  // Each addLayer is independent — one failing must not block the others
   const linesLayer = {
     id: "metro-lines",
     type: "line" as const,
@@ -241,7 +247,6 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
     },
   }
 
-  // Try to place lines below civic items; fall back to top of stack
   try {
     map.addLayer(linesLayer, "items-circles")
   } catch {

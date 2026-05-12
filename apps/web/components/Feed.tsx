@@ -16,7 +16,7 @@ interface FeedItem {
 }
 
 interface Props {
-  activeTypes: ItemType[]
+  type: ItemType
   communeId: number | null
   dateRange: DateRange
   typeColors: Record<ItemType, string>
@@ -42,24 +42,26 @@ function formatDate(dateStr: string): string {
   return `${days}d ago`
 }
 
-export default function Feed({ activeTypes, communeId, dateRange, typeColors }: Props) {
+export default function Feed({ type, communeId, dateRange, typeColors }: Props) {
   const [feedItems, setFeedItems] = useState<FeedItem[]>([])
   const [alertIds, setAlertIds] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
 
+  // Strike alerts only relevant for news tab
   useEffect(() => {
+    if (type !== "news") { setAlertIds(new Set()); return }
     fetch("/api/alerts")
       .then((r) => r.json())
       .then((data: FeedItem[]) => setAlertIds(new Set(data.map((a) => a.id))))
       .catch(() => {})
-  }, [])
+  }, [type])
 
   useEffect(() => {
     setLoading(true)
     const params = new URLSearchParams()
-    activeTypes.forEach((t) => params.append("type", t))
+    params.append("type", type)
     if (communeId) params.set("commune", String(communeId))
-    const { dateFrom, dateTo } = getDateBounds(dateRange, activeTypes)
+    const { dateFrom, dateTo } = getDateBounds(dateRange, [type])
     if (dateFrom) params.set("dateFrom", dateFrom)
     if (dateTo) params.set("dateTo", dateTo)
 
@@ -69,7 +71,7 @@ export default function Feed({ activeTypes, communeId, dateRange, typeColors }: 
         setFeedItems(data)
         setLoading(false)
       })
-  }, [activeTypes.join(","), communeId, dateRange])
+  }, [type, communeId, dateRange])
 
   if (loading) {
     return (

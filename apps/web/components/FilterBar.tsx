@@ -3,8 +3,8 @@
 import type { ItemType, DateRange } from "../lib/filters"
 
 interface Props {
-  activeTypes: Set<ItemType>
-  onToggle: (type: ItemType) => void
+  activeTab: ItemType
+  onTab: (tab: ItemType) => void
   typeColors: Record<ItemType, string>
   dateRange: DateRange
   onDateRange: (range: DateRange) => void
@@ -12,7 +12,7 @@ interface Props {
   onToggleMetro: () => void
 }
 
-const TYPE_LABELS: Record<ItemType, string> = {
+const TAB_LABELS: Record<ItemType, string> = {
   news: "News",
   event: "Events",
   roadwork: "Road Works",
@@ -25,27 +25,27 @@ const DATE_LABELS: Record<DateRange, string> = {
   all: "All",
 }
 
-export default function FilterBar({ activeTypes, onToggle, typeColors, dateRange, onDateRange, showMetro, onToggleMetro }: Props) {
+export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onDateRange, showMetro, onToggleMetro }: Props) {
   return (
     <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100 flex-wrap">
-      {(Object.keys(TYPE_LABELS) as ItemType[]).map((type) => {
-        const active = activeTypes.has(type)
+      {(Object.keys(TAB_LABELS) as ItemType[]).map((tab) => {
+        const active = activeTab === tab
         return (
           <button
-            key={type}
-            onClick={() => onToggle(type)}
+            key={tab}
+            onClick={() => onTab(tab)}
             className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
             style={{
-              borderColor: typeColors[type],
-              backgroundColor: active ? typeColors[type] : "white",
-              color: active ? "white" : typeColors[type],
+              borderColor: typeColors[tab],
+              backgroundColor: active ? typeColors[tab] : "white",
+              color: active ? "white" : typeColors[tab],
             }}
           >
             <span
               className="w-2 h-2 rounded-full flex-shrink-0"
-              style={{ backgroundColor: active ? "white" : typeColors[type] }}
+              style={{ backgroundColor: active ? "white" : typeColors[tab] }}
             />
-            {TYPE_LABELS[type]}
+            {TAB_LABELS[tab]}
           </button>
         )
       })}
