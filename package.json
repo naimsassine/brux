@@ -9,6 +9,7 @@
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",
     "ingest:news": "tsx scripts/ingestion/rss-news.ts",
+    "ingest:news:bruxellestoday": "tsx scripts/ingestion/bruxellestoday-news.ts",
     "ingest:events": "tsx scripts/ingestion/visit-brussels-events.ts"
   },
   "devDependencies": {
