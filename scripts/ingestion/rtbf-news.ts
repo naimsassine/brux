@@ -1,6 +1,6 @@
 /**
- * Scrapes top headlines from bruxellestoday.be (French-language Brussels news).
- * The homepage has no dates in article listings, so publishedAt defaults to now.
+ * Scrapes Brussels headlines from rtbf.be/archive/bruxelles.
+ * Dates are relative on the page, so publishedAt defaults to now.
  * Titles and summaries are translated to English via GPT-mini.
  */
 
@@ -9,7 +9,8 @@ import { db, items } from "@brux/db"
 import { translateToEnglish } from "./translate"
 import { extractAndGeocodeLocation } from "./geocode"
 
-const BASE_URL = "https://www.bruxellestoday.be"
+const BASE_URL = "https://www.rtbf.be"
+const ARCHIVE_URL = `${BASE_URL}/archive/bruxelles`
 
 const COMMUNE_KEYWORDS: Array<{ keywords: string[]; id: number }> = [
   { keywords: ["anderlecht"], id: 1 },
@@ -41,103 +42,87 @@ function detectCommune(text: string): number | null {
   return null
 }
 
-function decodeHtmlEntities(str: string): string {
-  return str
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'")
-    .replace(/&rsquo;/g, "'")
-    .replace(/&lsquo;/g, "'")
-    .replace(/&rdquo;/g, '"')
-    .replace(/&ldquo;/g, '"')
-    .replace(/&ndash;/g, "–")
-    .replace(/&mdash;/g, "—")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&[a-z]+;/g, "")
-    .replace(/&#\d+;/g, "")
-    .trim()
-}
-
 interface ScrapedArticle {
   title: string
   url: string
+  summary: string | null
 }
 
-function scrapeHomepage(html: string): ScrapedArticle[] {
+function scrapeArchivePage(html: string): ScrapedArticle[] {
   const seen = new Set<string>()
   const results: ScrapedArticle[] = []
 
-  // Match article blocks
-  const articlePattern = /<article[^>]*class="c-story[^"]*"[^>]*>([\s\S]*?)<\/article>/g
+  // Each card has an <h3 class="card-title ..."> with a stretched-link <a href="/article/...">
+  const cardPattern =
+    /<h3[^>]*class="card-title[^"]*"[^>]*>\s*<a[^>]+href="(\/article\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/g
   let match: RegExpExecArray | null
 
-  while ((match = articlePattern.exec(html)) !== null) {
-    const block = match[1]
-
-    // Extract the first internal link
-    const linkMatch = block.match(/href="(\/[^"]+\.html)"/)
-    if (!linkMatch) continue
-    const path = linkMatch[1]
+  while ((match = cardPattern.exec(html)) !== null) {
+    const path = match[1]
     if (seen.has(path)) continue
     seen.add(path)
 
-    // Extract heading text
-    const headingMatch = block.match(/<h[1-4][^>]*>([\s\S]*?)<\/h[1-4]>/)
-    if (!headingMatch) continue
-    const rawTitle = headingMatch[1].replace(/<[^>]+>/g, "").trim()
-    const title = decodeHtmlEntities(rawTitle)
+    const title = match[2].replace(/<[^>]+>/g, "").trim()
     if (!title) continue
 
-    results.push({ title, url: `${BASE_URL}${path}` })
+    // Optional summary: <p class="hidden text-14 ..."> immediately after the card header
+    const afterCard = html.slice(match.index + match[0].length, match.index + match[0].length + 600)
+    const summaryMatch = afterCard.match(/<p[^>]*class="[^"]*text-14[^"]*"[^>]*>([\s\S]*?)<\/p>/)
+    const summary = summaryMatch
+      ? summaryMatch[1].replace(/<[^>]+>/g, "").trim() || null
+      : null
+
+    results.push({ title, url: `${BASE_URL}${path}`, summary })
   }
 
   return results
 }
 
 async function main() {
-  console.log("Fetching bruxellestoday.be homepage...")
+  console.log("Fetching rtbf.be/archive/bruxelles...")
 
-  const res = await fetch(BASE_URL, {
+  const res = await fetch(ARCHIVE_URL, {
     headers: {
-      "User-Agent": "Brux-Dashboard/1.0 (civic data aggregator)",
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
       "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       "Accept-Language": "fr-BE,fr;q=0.9",
     },
   })
-  if (!res.ok) throw new Error(`HTTP ${res.status} from bruxellestoday.be`)
+  if (!res.ok) throw new Error(`HTTP ${res.status} from rtbf.be`)
 
   const html = await res.text()
-  const articles = scrapeHomepage(html)
+  const articles = scrapeArchivePage(html)
   console.log(`  Found ${articles.length} articles`)
 
   let ingested = 0
   for (const article of articles) {
     const title = await translateToEnglish(article.title, "fr")
-    const communeId = detectCommune(article.title)
-    const coords = await extractAndGeocodeLocation(title, null)
+    const summary = article.summary ? await translateToEnglish(article.summary, "fr") : null
+
+    const searchText = `${article.title} ${article.summary ?? ""}`
+    const communeId = detectCommune(searchText)
+    const coords = await extractAndGeocodeLocation(title, summary)
 
     await db
       .insert(items)
       .values({
         type: "news",
         title,
-        summary: null,
+        summary,
         sourceUrl: article.url,
-        sourceName: "BruxellesToday",
+        sourceName: "RTBF",
         communeId,
         lat: coords?.lat ?? null,
         lng: coords?.lng ?? null,
         publishedAt: new Date(),
-        raw: { rawTitle: article.title } as any,
+        raw: { rawTitle: article.title, rawSummary: article.summary } as any,
       })
       .onConflictDoNothing()
 
     ingested++
   }
 
-  console.log(`  Ingested ${ingested} articles from BruxellesToday`)
+  console.log(`  Ingested ${ingested} articles from RTBF`)
   process.exit(0)
 }
 

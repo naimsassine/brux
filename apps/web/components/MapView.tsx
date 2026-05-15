@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import type { ItemType } from "../lib/filters"
+import React, { useEffect, useRef } from "react"
+import type { ItemType, DateRange } from "../lib/filters"
+import { getDateBounds } from "../lib/filters"
 
 interface MetroLine {
   id: string
@@ -15,6 +16,10 @@ interface Props {
   onSelectCommune: (id: number | null) => void
   typeColors: Record<ItemType, string>
   showMetro: boolean
+  showBusNetwork: boolean
+  showRailNetwork: boolean
+  activeTab: ItemType
+  dateRange: DateRange
 }
 
 function escapeHtml(str: string): string {
@@ -37,10 +42,11 @@ function buildPopupHtml(props: any, typeColors: Record<string, string>): string 
   `
 }
 
-export default function MapView({ selectedCommune, onSelectCommune, typeColors, showMetro }: Props) {
+export default function MapView({ selectedCommune, onSelectCommune, typeColors, showMetro, showBusNetwork, showRailNetwork, activeTab, dateRange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const metroIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const itemsAbortRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -58,8 +64,6 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
       mapRef.current = map
 
       map.on("load", () => {
-        fetchAndRenderItems(map, typeColors)
-
         // Hover popup
         let activePopup: any = null
 
@@ -92,6 +96,22 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
       mapRef.current = null
     }
   }, [])
+
+  // Re-fetch map items when tab or date range changes
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+
+    const run = () => {
+      if (map.isStyleLoaded()) fetchAndRenderItems(map, typeColors, activeTab, dateRange, itemsAbortRef)
+    }
+
+    if (map.isStyleLoaded()) {
+      run()
+    } else {
+      map.once("load", run)
+    }
+  }, [activeTab, dateRange])
 
   // Metro layer: initial load + polling
   useEffect(() => {
@@ -130,15 +150,106 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
     }
   }, [showMetro])
 
+  // Rail (tram + metro) network layer
+  useEffect(() => {
+    const apply = () => {
+      const map = mapRef.current
+      if (!map?.isStyleLoaded()) return
+      if (!showRailNetwork) {
+        if (map.getLayer("rail-network")) map.removeLayer("rail-network")
+        if (map.getSource("rail-network")) map.removeSource("rail-network")
+        return
+      }
+      if (!map.getSource("rail-network")) {
+        map.addSource("rail-network", { type: "geojson", data: "/rail-network.geojson" })
+      }
+      if (!map.getLayer("rail-network")) {
+        map.addLayer({
+          id: "rail-network",
+          type: "line" as const,
+          source: "rail-network",
+          layout: { "line-join": "round" as const, "line-cap": "round" as const },
+          paint: { "line-color": "#7c3aed", "line-width": 2, "line-opacity": 0.6 },
+        })
+      }
+    }
+
+    const map = mapRef.current
+    if (!map) {
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) { clearInterval(wait); apply() }
+      }, 200)
+      return () => clearInterval(wait)
+    }
+    if (map.isStyleLoaded()) apply()
+    else map.once("load", apply)
+  }, [showRailNetwork])
+
+  // Bus network layer
+  useEffect(() => {
+    const apply = () => {
+      const map = mapRef.current
+      if (!map?.isStyleLoaded()) return
+      if (!showBusNetwork) {
+        if (map.getLayer("bus-network")) map.removeLayer("bus-network")
+        if (map.getSource("bus-network")) map.removeSource("bus-network")
+        return
+      }
+      if (!map.getSource("bus-network")) {
+        map.addSource("bus-network", { type: "geojson", data: "/bus-network.geojson" })
+      }
+      if (!map.getLayer("bus-network")) {
+        map.addLayer({
+          id: "bus-network",
+          type: "line" as const,
+          source: "bus-network",
+          layout: { "line-join": "round" as const, "line-cap": "round" as const },
+          paint: { "line-color": "#16a34a", "line-width": 1.5, "line-opacity": 0.5 },
+        })
+      }
+    }
+
+    const map = mapRef.current
+    if (!map) {
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) { clearInterval(wait); apply() }
+      }, 200)
+      return () => clearInterval(wait)
+    }
+    if (map.isStyleLoaded()) apply()
+    else map.once("load", apply)
+  }, [showBusNetwork])
+
   return <div ref={containerRef} className="flex-1" />
 }
 
-async function fetchAndRenderItems(map: any, typeColors: Record<string, string>) {
-  const params = new URLSearchParams()
-  params.set("limit", "200")
+async function fetchAndRenderItems(
+  map: any,
+  typeColors: Record<string, string>,
+  activeTab: ItemType,
+  dateRange: DateRange,
+  abortRef: React.MutableRefObject<AbortController | null>,
+) {
+  abortRef.current?.abort()
+  const controller = new AbortController()
+  abortRef.current = controller
 
-  const res = await fetch(`/api/items?${params}`)
+  const params = new URLSearchParams()
+  params.set("type", activeTab)
+  params.set("limit", "500")
+  const { dateFrom, dateTo } = getDateBounds(dateRange, [activeTab])
+  if (dateFrom) params.set("dateFrom", dateFrom)
+  if (dateTo) params.set("dateTo", dateTo)
+
+  let res: Response
+  try {
+    res = await fetch(`/api/items?${params}`, { signal: controller.signal })
+  } catch {
+    return
+  }
+  if (controller.signal.aborted) return
   const data = await res.json()
+  if (controller.signal.aborted) return
 
   const features = data
     .filter((item: any) => item.lat && item.lng)
@@ -201,6 +312,61 @@ function clearMetroLayers(map: any) {
   }
 }
 
+function addMetroLayersToMap(map: any) {
+  if (!map.getLayer("metro-lines")) {
+    const linesLayer = {
+      id: "metro-lines",
+      type: "line" as const,
+      source: "metro-lines",
+      layout: { "line-join": "round" as const, "line-cap": "round" as const },
+      paint: {
+        "line-color": ["get", "color"] as any,
+        "line-width": 4,
+        "line-opacity": 0.85,
+      },
+    }
+    try {
+      map.addLayer(linesLayer, "items-circles")
+    } catch {
+      try { map.addLayer(linesLayer) } catch {}
+    }
+  }
+
+  if (!map.getLayer("metro-vehicles")) {
+    try {
+      map.addLayer({
+        id: "metro-vehicles",
+        type: "circle",
+        source: "metro-vehicles",
+        paint: {
+          "circle-radius": 9,
+          "circle-color": ["get", "color"],
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#fff",
+          "circle-opacity": 1,
+        },
+      })
+    } catch {}
+  }
+
+  if (!map.getLayer("metro-vehicle-labels")) {
+    try {
+      map.addLayer({
+        id: "metro-vehicle-labels",
+        type: "symbol",
+        source: "metro-vehicles",
+        layout: {
+          "text-field": ["get", "lineId"],
+          "text-size": 9,
+          "text-font": ["Noto Sans Regular"],
+          "text-anchor": "center",
+        },
+        paint: { "text-color": "#fff" },
+      })
+    } catch {}
+  }
+}
+
 function renderMetroLayers(map: any, lines: MetroLine[]) {
   const lineFeatures = lines.map((line) => ({
     type: "Feature",
@@ -226,60 +392,13 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
 
   if (map.getSource("metro-lines")) {
     map.getSource("metro-lines").setData(linesGeojson)
-    if (map.getSource("metro-vehicles")) {
-      map.getSource("metro-vehicles").setData(vehiclesGeojson)
-    }
+    map.getSource("metro-vehicles")?.setData(vehiclesGeojson)
+    // Re-add any layers that may have been dropped (e.g. after a style tile reload)
+    addMetroLayersToMap(map)
     return
   }
 
   map.addSource("metro-lines", { type: "geojson", data: linesGeojson })
   map.addSource("metro-vehicles", { type: "geojson", data: vehiclesGeojson })
-
-  const linesLayer = {
-    id: "metro-lines",
-    type: "line" as const,
-    source: "metro-lines",
-    layout: { "line-join": "round" as const, "line-cap": "round" as const },
-    paint: {
-      "line-color": ["get", "color"] as any,
-      "line-width": 4,
-      "line-opacity": 0.85,
-    },
-  }
-
-  try {
-    map.addLayer(linesLayer, "items-circles")
-  } catch {
-    try { map.addLayer(linesLayer) } catch {}
-  }
-
-  try {
-    map.addLayer({
-      id: "metro-vehicles",
-      type: "circle",
-      source: "metro-vehicles",
-      paint: {
-        "circle-radius": 9,
-        "circle-color": ["get", "color"],
-        "circle-stroke-width": 2,
-        "circle-stroke-color": "#fff",
-        "circle-opacity": 1,
-      },
-    })
-  } catch {}
-
-  try {
-    map.addLayer({
-      id: "metro-vehicle-labels",
-      type: "symbol",
-      source: "metro-vehicles",
-      layout: {
-        "text-field": ["get", "lineId"],
-        "text-size": 9,
-        "text-font": ["Noto Sans Regular"],
-        "text-anchor": "center",
-      },
-      paint: { "text-color": "#fff" },
-    })
-  } catch {}
+  addMetroLayersToMap(map)
 }

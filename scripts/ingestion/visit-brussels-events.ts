@@ -6,6 +6,7 @@
 
 import "dotenv/config"
 import { db, items } from "@brux/db"
+import { eq, lt, and } from "drizzle-orm"
 import { translateToEnglish } from "./translate"
 
 const BASE_URL =
@@ -108,6 +109,11 @@ function detectCommune(text: string): number | null {
 }
 
 async function main() {
+  const deleted = await db.delete(items).where(
+    and(eq(items.type, "event"), lt(items.publishedAt, new Date()))
+  )
+  console.log(`Cleaned up ${deleted.rowCount ?? 0} past events.`)
+
   let totalIngested = 0
   let page = 1
 

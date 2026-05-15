@@ -6,6 +6,7 @@
 import "dotenv/config"
 import { db, items } from "@brux/db"
 import { translateToEnglish } from "./translate"
+import { extractAndGeocodeLocation } from "./geocode"
 
 interface RssSource {
   name: string
@@ -137,6 +138,7 @@ async function ingestSource(source: RssSource): Promise<number> {
 
     const searchText = `${rawTitle} ${rawSummary}`
     const communeId = detectCommune(searchText)
+    const coords = await extractAndGeocodeLocation(title, summary)
 
     await db
       .insert(items)
@@ -147,8 +149,8 @@ async function ingestSource(source: RssSource): Promise<number> {
         sourceUrl: entry.link || entry.guid,
         sourceName: source.name,
         communeId,
-        lat: null,
-        lng: null,
+        lat: coords?.lat ?? null,
+        lng: coords?.lng ?? null,
         publishedAt: entry.pubDate ? new Date(entry.pubDate) : new Date(),
         raw: entry as any,
       })

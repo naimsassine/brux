@@ -19,6 +19,8 @@ export default function Home() {
   const [selectedCommune, setSelectedCommune] = useState<number | null>(null)
   const [dateRange, setDateRange] = useState<DateRange>("month")
   const [showMetro, setShowMetro] = useState(true)
+  const [showBusNetwork, setShowBusNetwork] = useState(false)
+  const [showRailNetwork, setShowRailNetwork] = useState(false)
 
   return (
     <div className="flex flex-col h-screen">
@@ -43,6 +45,10 @@ export default function Home() {
         onDateRange={setDateRange}
         showMetro={showMetro}
         onToggleMetro={() => setShowMetro((v) => !v)}
+        showBusNetwork={showBusNetwork}
+        onToggleBusNetwork={() => setShowBusNetwork((v) => !v)}
+        showRailNetwork={showRailNetwork}
+        onToggleRailNetwork={() => setShowRailNetwork((v) => !v)}
       />
 
       <div className="flex flex-1 overflow-hidden">
@@ -57,6 +63,10 @@ export default function Home() {
           onSelectCommune={setSelectedCommune}
           typeColors={TYPE_COLORS}
           showMetro={showMetro}
+          showBusNetwork={showBusNetwork}
+          showRailNetwork={showRailNetwork}
+          activeTab={activeTab}
+          dateRange={dateRange}
         />
       </div>
     </div>

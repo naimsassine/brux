@@ -10,6 +10,10 @@ interface Props {
   onDateRange: (range: DateRange) => void
   showMetro: boolean
   onToggleMetro: () => void
+  showBusNetwork: boolean
+  onToggleBusNetwork: () => void
+  showRailNetwork: boolean
+  onToggleRailNetwork: () => void
 }
 
 const TAB_LABELS: Record<ItemType, string> = {
@@ -25,7 +29,7 @@ const DATE_LABELS: Record<DateRange, string> = {
   all: "All",
 }
 
-export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onDateRange, showMetro, onToggleMetro }: Props) {
+export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onDateRange, showMetro, onToggleMetro, showBusNetwork, onToggleBusNetwork, showRailNetwork, onToggleRailNetwork }: Props) {
   return (
     <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100 flex-wrap">
       {(Object.keys(TAB_LABELS) as ItemType[]).map((tab) => {
@@ -66,6 +70,38 @@ export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onD
           style={{ backgroundColor: showMetro ? "white" : "#1a56a0" }}
         />
         Metro
+      </button>
+
+      <button
+        onClick={onToggleRailNetwork}
+        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
+        style={{
+          borderColor: "#7c3aed",
+          backgroundColor: showRailNetwork ? "#7c3aed" : "white",
+          color: showRailNetwork ? "white" : "#7c3aed",
+        }}
+      >
+        <span
+          className="w-2 h-2 rounded-full flex-shrink-0"
+          style={{ backgroundColor: showRailNetwork ? "white" : "#7c3aed" }}
+        />
+        Tram & Metro
+      </button>
+
+      <button
+        onClick={onToggleBusNetwork}
+        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
+        style={{
+          borderColor: "#16a34a",
+          backgroundColor: showBusNetwork ? "#16a34a" : "white",
+          color: showBusNetwork ? "white" : "#16a34a",
+        }}
+      >
+        <span
+          className="w-2 h-2 rounded-full flex-shrink-0"
+          style={{ backgroundColor: showBusNetwork ? "white" : "#16a34a" }}
+        />
+        Bus
       </button>
 
       <div className="w-px h-5 bg-gray-200 mx-1" />
