@@ -14,6 +14,8 @@ interface Props {
   onToggleBusNetwork: () => void
   showRailNetwork: boolean
   onToggleRailNetwork: () => void
+  showPoliticalSites: boolean
+  onTogglePoliticalSites: () => void
 }
 
 const TAB_LABELS: Record<ItemType, string> = {
@@ -29,7 +31,7 @@ const DATE_LABELS: Record<DateRange, string> = {
   all: "All",
 }
 
-export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onDateRange, showMetro, onToggleMetro, showBusNetwork, onToggleBusNetwork, showRailNetwork, onToggleRailNetwork }: Props) {
+export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onDateRange, showMetro, onToggleMetro, showBusNetwork, onToggleBusNetwork, showRailNetwork, onToggleRailNetwork, showPoliticalSites, onTogglePoliticalSites }: Props) {
   return (
     <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100 flex-wrap">
       {(Object.keys(TAB_LABELS) as ItemType[]).map((tab) => {
@@ -102,6 +104,22 @@ export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onD
           style={{ backgroundColor: showBusNetwork ? "white" : "#16a34a" }}
         />
         Bus
+      </button>
+
+      <button
+        onClick={onTogglePoliticalSites}
+        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
+        style={{
+          borderColor: "#1e3a5f",
+          backgroundColor: showPoliticalSites ? "#1e3a5f" : "white",
+          color: showPoliticalSites ? "white" : "#1e3a5f",
+        }}
+      >
+        <span
+          className="w-2 h-2 rounded-full flex-shrink-0"
+          style={{ backgroundColor: showPoliticalSites ? "white" : "#1e3a5f" }}
+        />
+        Political Sites
       </button>
 
       <div className="w-px h-5 bg-gray-200 mx-1" />

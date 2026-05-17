@@ -1,0 +1,55 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3732, 50.8437] },
+      "properties": { "name": "European Commission", "shortName": "EC", "description": "Berlaymont building — seat of the European Commission" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3748, 50.8431] },
+      "properties": { "name": "Council of the EU", "shortName": "Council", "description": "Justus Lipsius building — Council of the European Union" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3758, 50.8432] },
+      "properties": { "name": "European Council", "shortName": "EUCO", "description": "Europa (Egg) building — European Council" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3754, 50.8397] },
+      "properties": { "name": "European Parliament", "shortName": "EP", "description": "Espace Léopold — Brussels seat of the European Parliament" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3750, 50.8438] },
+      "properties": { "name": "EEAS", "shortName": "EEAS", "description": "Charlemagne building — European External Action Service" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3741, 50.8417] },
+      "properties": { "name": "Committee of the Regions", "shortName": "CoR", "description": "Jacques Delors building — Committee of the Regions" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3738, 50.8419] },
+      "properties": { "name": "EESC", "shortName": "EESC", "description": "European Economic and Social Committee" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3720, 50.8408] },
+      "properties": { "name": "Court of Justice (BXL)", "shortName": "CJEU", "description": "Brussels office of the Court of Justice of the EU" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3690, 50.8388] },
+      "properties": { "name": "European Ombudsman", "shortName": "Omb.", "description": "Brussels office of the European Ombudsman" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.4185, 50.8800] },
+      "properties": { "name": "NATO HQ", "shortName": "NATO", "description": "NATO Headquarters (Evere)" }
+    }
+  ]
+}

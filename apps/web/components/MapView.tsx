@@ -18,6 +18,7 @@ interface Props {
   showMetro: boolean
   showBusNetwork: boolean
   showRailNetwork: boolean
+  showPoliticalSites: boolean
   activeTab: ItemType
   dateRange: DateRange
 }
@@ -42,11 +43,43 @@ function buildPopupHtml(props: any, typeColors: Record<string, string>): string 
   `
 }
 
-export default function MapView({ selectedCommune, onSelectCommune, typeColors, showMetro, showBusNetwork, showRailNetwork, activeTab, dateRange }: Props) {
+// Renders at 2× resolution so it appears crisp when addImage is called with { pixelRatio: 2 }
+function makeBelgianFlagImage(cssSize: number): ImageData {
+  const px = cssSize * 2
+  const canvas = document.createElement("canvas")
+  canvas.width = px
+  canvas.height = px
+  const ctx = canvas.getContext("2d")!
+  const r = px / 2
+
+  ctx.beginPath()
+  ctx.arc(r, r, r, 0, Math.PI * 2)
+  ctx.clip()
+
+  const w = px / 3
+  ctx.fillStyle = "#1a1a1a"
+  ctx.fillRect(0, 0, w, px)
+  ctx.fillStyle = "#FFD700"
+  ctx.fillRect(w, 0, w, px)
+  ctx.fillStyle = "#CC0000"
+  ctx.fillRect(w * 2, 0, w, px)
+
+  // White border ring
+  ctx.beginPath()
+  ctx.arc(r, r, r - 2, 0, Math.PI * 2)
+  ctx.strokeStyle = "#ffffff"
+  ctx.lineWidth = 3
+  ctx.stroke()
+
+  return ctx.getImageData(0, 0, px, px)
+}
+
+export default function MapView({ selectedCommune, onSelectCommune, typeColors, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, activeTab, dateRange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const metroIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const itemsAbortRef = useRef<AbortController | null>(null)
+  const PopupCtorRef = useRef<any>(null)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -54,6 +87,7 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
     let map: any
 
     import("maplibre-gl").then((maplibre) => {
+      PopupCtorRef.current = maplibre.Popup
       map = new maplibre.Map({
         container: containerRef.current!,
         style: "https://tiles.openfreemap.org/styles/liberty",
@@ -64,7 +98,6 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
       mapRef.current = map
 
       map.on("load", () => {
-        // Hover popup
         let activePopup: any = null
 
         map.on("mouseenter", "items-circles", (e: any) => {
@@ -139,7 +172,7 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
           metroIntervalRef.current = setInterval(() => fetchAndRenderMetro(mapRef.current), 15000)
         }
       }, 200)
-      return
+      return () => clearInterval(wait)
     }
 
     run()
@@ -164,13 +197,16 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
         map.addSource("rail-network", { type: "geojson", data: "/rail-network.geojson" })
       }
       if (!map.getLayer("rail-network")) {
-        map.addLayer({
-          id: "rail-network",
-          type: "line" as const,
-          source: "rail-network",
-          layout: { "line-join": "round" as const, "line-cap": "round" as const },
-          paint: { "line-color": "#7c3aed", "line-width": 2, "line-opacity": 0.6 },
-        })
+        map.addLayer(
+          {
+            id: "rail-network",
+            type: "line" as const,
+            source: "rail-network",
+            layout: { "line-join": "round" as const, "line-cap": "round" as const },
+            paint: { "line-color": "#7c3aed", "line-width": 2, "line-opacity": 0.6 },
+          },
+          lowestCustomLayer(map),
+        )
       }
     }
 
@@ -199,13 +235,16 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
         map.addSource("bus-network", { type: "geojson", data: "/bus-network.geojson" })
       }
       if (!map.getLayer("bus-network")) {
-        map.addLayer({
-          id: "bus-network",
-          type: "line" as const,
-          source: "bus-network",
-          layout: { "line-join": "round" as const, "line-cap": "round" as const },
-          paint: { "line-color": "#16a34a", "line-width": 1.5, "line-opacity": 0.5 },
-        })
+        map.addLayer(
+          {
+            id: "bus-network",
+            type: "line" as const,
+            source: "bus-network",
+            layout: { "line-join": "round" as const, "line-cap": "round" as const },
+            paint: { "line-color": "#16a34a", "line-width": 1.5, "line-opacity": 0.5 },
+          },
+          lowestCustomLayer(map),
+        )
       }
     }
 
@@ -219,6 +258,134 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
     if (map.isStyleLoaded()) apply()
     else map.once("load", apply)
   }, [showBusNetwork])
+
+  // Political sites (EU + Belgian) — togglable
+  useEffect(() => {
+    const MARKER_R = 10
+
+    const removeLayers = (map: any) => {
+      for (const id of ["eu-sites-circles", "eu-sites-labels", "be-sites-icons"]) {
+        if (map.getLayer(id)) map.removeLayer(id)
+      }
+      for (const id of ["eu-sites", "be-sites"]) {
+        if (map.getSource(id)) map.removeSource(id)
+      }
+    }
+
+    const apply = () => {
+      const map = mapRef.current
+      if (!map?.isStyleLoaded()) return
+
+      if (!showPoliticalSites) { removeLayers(map); return }
+
+      // — EU sites —
+      if (!map.getSource("eu-sites")) {
+        map.addSource("eu-sites", { type: "geojson", data: "/eu-sites.geojson" })
+      }
+      if (!map.getLayer("eu-sites-circles")) {
+        map.addLayer({
+          id: "eu-sites-circles",
+          type: "circle",
+          source: "eu-sites",
+          paint: {
+            "circle-radius": MARKER_R,
+            "circle-color": "#003399",
+            "circle-stroke-width": 2,
+            "circle-stroke-color": "#ffcc00",
+            "circle-opacity": 0.95,
+          },
+        })
+
+        let euPopup: any = null
+        map.on("mouseenter", "eu-sites-circles", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          map.getCanvas().style.cursor = "pointer"
+          const p = e.features[0].properties
+          euPopup?.remove()
+          euPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "240px" })
+            .setLngLat(e.lngLat)
+            .setHTML(`
+              <div style="font-family:system-ui,-apple-system,sans-serif;padding:2px 4px">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#003399;margin-bottom:4px">EU Institution</div>
+                <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:2px">${escapeHtml(p.name)}</div>
+                <div style="font-size:11px;color:#6b7280">${escapeHtml(p.description)}</div>
+              </div>`)
+            .addTo(map)
+        })
+        map.on("mouseleave", "eu-sites-circles", () => {
+          map.getCanvas().style.cursor = ""
+          euPopup?.remove()
+          euPopup = null
+        })
+      }
+      if (!map.getLayer("eu-sites-labels")) {
+        map.addLayer({
+          id: "eu-sites-labels",
+          type: "symbol",
+          source: "eu-sites",
+          layout: {
+            "text-field": "★",
+            "text-size": 13,
+            "text-font": ["Noto Sans Regular"],
+            "text-anchor": "center",
+          },
+          paint: { "text-color": "#ffcc00" },
+        })
+      }
+
+      // — Belgian political sites —
+      if (!map.hasImage("belgian-flag")) {
+        map.addImage("belgian-flag", makeBelgianFlagImage(MARKER_R * 2), { pixelRatio: 2 } as any)
+      }
+      if (!map.getSource("be-sites")) {
+        map.addSource("be-sites", { type: "geojson", data: "/belgian-political-sites.geojson" })
+      }
+      if (!map.getLayer("be-sites-icons")) {
+        map.addLayer({
+          id: "be-sites-icons",
+          type: "symbol",
+          source: "be-sites",
+          layout: {
+            "icon-image": "belgian-flag",
+            "icon-size": 1,
+            "icon-allow-overlap": true,
+          },
+        })
+
+        let bePopup: any = null
+        map.on("mouseenter", "be-sites-icons", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          map.getCanvas().style.cursor = "pointer"
+          const p = e.features[0].properties
+          bePopup?.remove()
+          bePopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "240px" })
+            .setLngLat(e.lngLat)
+            .setHTML(`
+              <div style="font-family:system-ui,-apple-system,sans-serif;padding:2px 4px">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#CC0000;margin-bottom:4px">Belgian Politics</div>
+                <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:2px">${escapeHtml(p.name)}</div>
+                <div style="font-size:11px;color:#6b7280">${escapeHtml(p.description)}</div>
+              </div>`)
+            .addTo(map)
+        })
+        map.on("mouseleave", "be-sites-icons", () => {
+          map.getCanvas().style.cursor = ""
+          bePopup?.remove()
+          bePopup = null
+        })
+      }
+    }
+
+    const map = mapRef.current
+    if (!map) {
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) { clearInterval(wait); apply() }
+      }, 200)
+      return () => clearInterval(wait)
+    }
+    if (map.isStyleLoaded()) apply()
+    else map.once("load", apply)
+  }, [showPoliticalSites])
 
   return <div ref={containerRef} className="flex-1" />
 }
@@ -312,6 +479,21 @@ function clearMetroLayers(map: any) {
   }
 }
 
+// Returns the id of the bottom-most custom layer that should sit above bus/rail lines,
+// so that network lines are always inserted below everything else we own.
+const ABOVE_NETWORK_LAYERS = [
+  "metro-lines",
+  "eu-sites-circles",
+  "eu-sites-labels",
+  "be-sites-icons",
+  "items-circles",
+  "metro-vehicles",
+  "metro-vehicle-labels",
+]
+function lowestCustomLayer(map: any): string | undefined {
+  return ABOVE_NETWORK_LAYERS.find((id) => map.getLayer(id))
+}
+
 function addMetroLayersToMap(map: any) {
   if (!map.getLayer("metro-lines")) {
     const linesLayer = {
@@ -325,45 +507,41 @@ function addMetroLayersToMap(map: any) {
         "line-opacity": 0.85,
       },
     }
-    try {
-      map.addLayer(linesLayer, "items-circles")
-    } catch {
-      try { map.addLayer(linesLayer) } catch {}
-    }
+    // Always insert below vehicles — even if vehicles already exist (e.g. after a re-add)
+    const beforeId = map.getLayer("metro-vehicles") ? "metro-vehicles"
+      : map.getLayer("items-circles") ? "items-circles"
+      : undefined
+    map.addLayer(linesLayer, beforeId)
   }
 
   if (!map.getLayer("metro-vehicles")) {
-    try {
-      map.addLayer({
-        id: "metro-vehicles",
-        type: "circle",
-        source: "metro-vehicles",
-        paint: {
-          "circle-radius": 9,
-          "circle-color": ["get", "color"],
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "#fff",
-          "circle-opacity": 1,
-        },
-      })
-    } catch {}
+    map.addLayer({
+      id: "metro-vehicles",
+      type: "circle",
+      source: "metro-vehicles",
+      paint: {
+        "circle-radius": 10,
+        "circle-color": ["get", "color"],
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#fff",
+        "circle-opacity": 1,
+      },
+    })
   }
 
   if (!map.getLayer("metro-vehicle-labels")) {
-    try {
-      map.addLayer({
-        id: "metro-vehicle-labels",
-        type: "symbol",
-        source: "metro-vehicles",
-        layout: {
-          "text-field": ["get", "lineId"],
-          "text-size": 9,
-          "text-font": ["Noto Sans Regular"],
-          "text-anchor": "center",
-        },
-        paint: { "text-color": "#fff" },
-      })
-    } catch {}
+    map.addLayer({
+      id: "metro-vehicle-labels",
+      type: "symbol",
+      source: "metro-vehicles",
+      layout: {
+        "text-field": ["get", "lineId"],
+        "text-size": 9,
+        "text-font": ["Noto Sans Regular"],
+        "text-anchor": "center",
+      },
+      paint: { "text-color": "#fff" },
+    })
   }
 }
 
@@ -393,7 +571,6 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
   if (map.getSource("metro-lines")) {
     map.getSource("metro-lines").setData(linesGeojson)
     map.getSource("metro-vehicles")?.setData(vehiclesGeojson)
-    // Re-add any layers that may have been dropped (e.g. after a style tile reload)
     addMetroLayersToMap(map)
     return
   }

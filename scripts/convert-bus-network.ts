@@ -19,7 +19,8 @@ function convertPosList(posList: string): [number, number][] {
   const nums = posList.trim().split(/\s+/).map(Number)
   const coords: [number, number][] = []
   for (let i = 0; i < nums.length - 1; i += 2) {
-    const [lng, lat] = toWgs84.forward([nums[i], nums[i + 1]])
+    // EPSG:3035 GML axis order is Northing (Y) then Easting (X); proj4 wants [x, y]
+    const [lng, lat] = toWgs84.forward([nums[i + 1], nums[i]])
     coords.push([lng, lat])
   }
   return coords

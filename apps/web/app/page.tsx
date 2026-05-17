@@ -21,6 +21,7 @@ export default function Home() {
   const [showMetro, setShowMetro] = useState(true)
   const [showBusNetwork, setShowBusNetwork] = useState(false)
   const [showRailNetwork, setShowRailNetwork] = useState(false)
+  const [showPoliticalSites, setShowPoliticalSites] = useState(true)
 
   return (
     <div className="flex flex-col h-screen">
@@ -49,6 +50,8 @@ export default function Home() {
         onToggleBusNetwork={() => setShowBusNetwork((v) => !v)}
         showRailNetwork={showRailNetwork}
         onToggleRailNetwork={() => setShowRailNetwork((v) => !v)}
+        showPoliticalSites={showPoliticalSites}
+        onTogglePoliticalSites={() => setShowPoliticalSites((v) => !v)}
       />
 
       <div className="flex flex-1 overflow-hidden">
@@ -65,6 +68,7 @@ export default function Home() {
           showMetro={showMetro}
           showBusNetwork={showBusNetwork}
           showRailNetwork={showRailNetwork}
+          showPoliticalSites={showPoliticalSites}
           activeTab={activeTab}
           dateRange={dateRange}
         />

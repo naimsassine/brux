@@ -1,0 +1,45 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3660, 50.8467] },
+      "properties": { "name": "Federal Parliament", "description": "Palais de la Nation — Chamber of Representatives & Senate" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3617, 50.8423] },
+      "properties": { "name": "Royal Palace", "description": "Palais Royal — official residence and workplace of the King of Belgium" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3668, 50.8445] },
+      "properties": { "name": "Prime Minister's Office", "description": "Rue de la Loi 16 — Cabinet of the Prime Minister of Belgium" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3526, 50.8386] },
+      "properties": { "name": "Palace of Justice", "description": "Palais de Justice — seat of the Court of Cassation and Court of Appeal" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3589, 50.8426] },
+      "properties": { "name": "Constitutional Court", "description": "Cour constitutionnelle — reviews constitutionality of Belgian laws" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3759, 50.8476] },
+      "properties": { "name": "Council of State", "description": "Conseil d'État — highest administrative court of Belgium" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3519, 50.8456] },
+      "properties": { "name": "Brussels Parliament", "description": "Parlement de la Région de Bruxelles-Capitale" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [4.3555, 50.8502] },
+      "properties": { "name": "City Hall of Brussels", "description": "Hôtel de Ville — seat of the City of Brussels municipal government" }
+    }
+  ]
+}
