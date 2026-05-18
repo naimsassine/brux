@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import type { ItemType, DateRange } from "../lib/filters"
+import { useEffect, useRef, useState } from "react"
+import type { ItemType, TabType, DateRange } from "../lib/filters"
 import { getDateBounds } from "../lib/filters"
+import type { TrafficAlert } from "../app/api/traffic/route"
 
 type AlertTier = "critical" | "warning" | "info"
 
@@ -62,10 +63,11 @@ interface FeedItem {
 }
 
 interface Props {
-  type: ItemType
+  type: TabType
   communeId: number | null
   dateRange: DateRange
   typeColors: Record<ItemType, string>
+  trafficColor: string
 }
 
 function formatDate(dateStr: string): string {
@@ -88,7 +90,112 @@ function formatDate(dateStr: string): string {
   return `${days}d ago`
 }
 
-export default function Feed({ type, communeId, dateRange, typeColors }: Props) {
+// ── Traffic feed ──────────────────────────────────────────────────────────────
+
+function TrafficFeed({ trafficColor }: { trafficColor: string }) {
+  const [alerts, setAlerts] = useState<TrafficAlert[]>([])
+  const [loading, setLoading] = useState(true)
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const fetch2 = () => {
+    fetch("/api/traffic")
+      .then((r) => r.json())
+      .then((data: TrafficAlert[]) => {
+        setAlerts(data)
+        setLoading(false)
+        setLastUpdated(new Date())
+      })
+      .catch(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetch2()
+    intervalRef.current = setInterval(fetch2, 120_000)
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="w-[480px] flex-shrink-0 border-r border-gray-200 flex items-center justify-center text-gray-400">
+        Loading traffic…
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-[480px] flex-shrink-0 border-r border-gray-200 overflow-y-auto bg-gray-50">
+      <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-2 flex items-center gap-2">
+        <span
+          className="w-2 h-2 rounded-full animate-pulse flex-shrink-0"
+          style={{ backgroundColor: trafficColor }}
+        />
+        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: trafficColor }}>
+          Live Traffic Info
+        </span>
+        {lastUpdated && (
+          <span className="text-xs text-gray-400 ml-auto">
+            Updated {formatDate(lastUpdated.toISOString())}
+          </span>
+        )}
+      </div>
+
+      {alerts.length === 0 ? (
+        <div className="p-8 text-center text-gray-400">No active traffic alerts</div>
+      ) : (
+        alerts.map((alert) => (
+          <article
+            key={alert.id}
+            className="border-b border-gray-100 bg-white hover:bg-red-50 px-4 py-3 transition-colors border-l-4 border-l-red-400"
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span
+                className="w-2 h-2 rounded-full flex-shrink-0"
+                style={{ backgroundColor: trafficColor }}
+              />
+              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: trafficColor }}>
+                {alert.location ?? "Brussels"}
+              </span>
+              <span className="text-xs text-gray-300">·</span>
+              <span className="text-xs text-gray-400">{formatDate(alert.createdAt)}</span>
+              {alert.lat && (
+                <>
+                  <span className="text-xs text-gray-300">·</span>
+                  <span className="text-xs text-gray-400">📍 on map</span>
+                </>
+              )}
+            </div>
+            <p className="text-sm text-gray-900 leading-snug">{alert.content}</p>
+          </article>
+        ))
+      )}
+    </div>
+  )
+}
+
+// ── Standard item feed ────────────────────────────────────────────────────────
+
+export default function Feed({ type, communeId, dateRange, typeColors, trafficColor }: Props) {
+  if (type === "traffic") {
+    return <TrafficFeed trafficColor={trafficColor} />
+  }
+
+  return <ItemFeed type={type} communeId={communeId} dateRange={dateRange} typeColors={typeColors} />
+}
+
+function ItemFeed({
+  type,
+  communeId,
+  dateRange,
+  typeColors,
+}: {
+  type: ItemType
+  communeId: number | null
+  dateRange: DateRange
+  typeColors: Record<ItemType, string>
+}) {
   const [feedItems, setFeedItems] = useState<FeedItem[]>([])
   const [alertTiers, setAlertTiers] = useState<Map<string, AlertTier>>(new Map())
   const [loading, setLoading] = useState(true)

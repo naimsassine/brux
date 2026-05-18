@@ -1,0 +1,1659 @@
+[
+    {
+        "id": "116590328593014248",
+        "created_at": "2026-05-17T14:13:50.728Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "nl",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer/statuses/116590328593014248",
+        "url": "https://info.mobilite-mobiliteit.brussels/@verkeer/116590328593014248",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003eVanwege een defect voertuig op de Belliardstraat richting E40/Tervuren ter hoogte van de Kunstlaan is de linkerrijstrook versperd.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403159492555933",
+            "username": "verkeer",
+            "acct": "verkeer",
+            "display_name": "Verkeer Brussel Mobiliteit",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBrussel Mobiliteit houdt u 24/7 op de hoogte van het verkeer in het Brussels Hoofdstedelijk Gewest.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@verkeer",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "followers_count": 158,
+            "following_count": 5,
+            "statuses_count": 294,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/nl\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/nl\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": "2024-10-31T19:46:17.946+00:00"
+                },
+                {
+                    "name": "Nieuws Brussel Mobiliteit",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@brusselmobiliteit\" class=\"u-url mention\"\u003e@\u003cspan\u003ebrusselmobiliteit\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "En français",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@trafic\" class=\"u-url mention\"\u003e@\u003cspan\u003etrafic\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116590327180695972",
+        "created_at": "2026-05-17T14:13:29.179Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116590327180695972",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116590327180695972",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003eSuite à un véhicule en panne sur la rue Belliard direction E40/Tervueren à hauteur de l\u0026#39;avenue des Arts, la bande de gauche est obstruée.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589954865386443",
+        "created_at": "2026-05-17T12:38:48.099Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "nl",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer/statuses/116589954865386443",
+        "url": "https://info.mobilite-mobiliteit.brussels/@verkeer/116589954865386443",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, geen vertraagd verkeer meer in de Kruidtuintunnel richting Basiliek.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403159492555933",
+            "username": "verkeer",
+            "acct": "verkeer",
+            "display_name": "Verkeer Brussel Mobiliteit",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBrussel Mobiliteit houdt u 24/7 op de hoogte van het verkeer in het Brussels Hoofdstedelijk Gewest.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@verkeer",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "followers_count": 158,
+            "following_count": 5,
+            "statuses_count": 294,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/nl\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/nl\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": "2024-10-31T19:46:17.946+00:00"
+                },
+                {
+                    "name": "Nieuws Brussel Mobiliteit",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@brusselmobiliteit\" class=\"u-url mention\"\u003e@\u003cspan\u003ebrusselmobiliteit\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "En français",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@trafic\" class=\"u-url mention\"\u003e@\u003cspan\u003etrafic\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589953999902211",
+        "created_at": "2026-05-17T12:38:34.893Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116589953999902211",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116589953999902211",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, fin des ralentissements dans le tunnel Botanique direction Basilique.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589885482633570",
+        "created_at": "2026-05-17T12:21:09.401Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "nl",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer/statuses/116589885482633570",
+        "url": "https://info.mobilite-mobiliteit.brussels/@verkeer/116589885482633570",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, vertraagd verkeer van de Kruidtuintunnel tem de Rogiertunnel richting Basiliek.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403159492555933",
+            "username": "verkeer",
+            "acct": "verkeer",
+            "display_name": "Verkeer Brussel Mobiliteit",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBrussel Mobiliteit houdt u 24/7 op de hoogte van het verkeer in het Brussels Hoofdstedelijk Gewest.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@verkeer",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "followers_count": 158,
+            "following_count": 5,
+            "statuses_count": 294,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/nl\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/nl\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": "2024-10-31T19:46:17.946+00:00"
+                },
+                {
+                    "name": "Nieuws Brussel Mobiliteit",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@brusselmobiliteit\" class=\"u-url mention\"\u003e@\u003cspan\u003ebrusselmobiliteit\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "En français",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@trafic\" class=\"u-url mention\"\u003e@\u003cspan\u003etrafic\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589884669538964",
+        "created_at": "2026-05-17T12:20:56.995Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116589884669538964",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116589884669538964",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, ralentissements du tunnel Botanique au tunnel Rogier direction Basilique.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589336726956044",
+        "created_at": "2026-05-17T10:01:36.053Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "nl",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer/statuses/116589336726956044",
+        "url": "https://info.mobilite-mobiliteit.brussels/@verkeer/116589336726956044",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, het technisch incident is beëindigd. De tunnels Belliard, Jubelpark en Wet zijn weer open voor het verkeer.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403159492555933",
+            "username": "verkeer",
+            "acct": "verkeer",
+            "display_name": "Verkeer Brussel Mobiliteit",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBrussel Mobiliteit houdt u 24/7 op de hoogte van het verkeer in het Brussels Hoofdstedelijk Gewest.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@verkeer",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "followers_count": 158,
+            "following_count": 5,
+            "statuses_count": 294,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/nl\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/nl\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": "2024-10-31T19:46:17.946+00:00"
+                },
+                {
+                    "name": "Nieuws Brussel Mobiliteit",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@brusselmobiliteit\" class=\"u-url mention\"\u003e@\u003cspan\u003ebrusselmobiliteit\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "En français",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@trafic\" class=\"u-url mention\"\u003e@\u003cspan\u003etrafic\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589335590575510",
+        "created_at": "2026-05-17T10:01:18.715Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116589335590575510",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116589335590575510",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, fin de l\u0026#39;incident technique. Les tunnels Belliard, Cinquantenaire et Loi sont rouverts à la circulation.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589332252240118",
+        "created_at": "2026-05-17T10:00:27.775Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116589332252240118",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116589332252240118",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e🪧 Ce dimanche 17 mai, une \u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/manifestation\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003emanifestation\u003c/span\u003e\u003c/a\u003e parcourra \u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/Bruxelles\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eBruxelles\u003c/span\u003e\u003c/a\u003e. Des perturbations sont à prévoir entre 14h et 17h.\u003c/p\u003e\u003cp\u003e📍 L\u0026#39;itinéraire:  bd Roi Albert II \u0026gt; bd du Jardin Botanique \u0026gt; bd Pachéco \u0026gt; bd de Berlaimont \u0026gt; bd de l’Imperatrice \u0026gt; Carrefour de l\u0026#39;Europe.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "manifestation",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/manifestation"
+            },
+            {
+                "name": "bruxelles",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/bruxelles"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589332251736162",
+        "created_at": "2026-05-17T10:00:27.771Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "nl",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer/statuses/116589332251736162",
+        "url": "https://info.mobilite-mobiliteit.brussels/@verkeer/116589332251736162",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e🪧 Vandaag, 17 mei, trekt een \u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/betoging\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003ebetoging\u003c/span\u003e\u003c/a\u003e door \u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/Brussel\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eBrussel\u003c/span\u003e\u003c/a\u003e. Verkeershinder wordt verwacht van 14u tot 17u.\u003c/p\u003e\u003cp\u003e📍 Het parcours: Koning Albert II-laan \u0026gt; Kruidtuinlaan \u0026gt; Pachecolaan \u0026gt; Berlaimontlaan \u0026gt; Keizerinlaan \u0026gt; Europakruispunt.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403159492555933",
+            "username": "verkeer",
+            "acct": "verkeer",
+            "display_name": "Verkeer Brussel Mobiliteit",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBrussel Mobiliteit houdt u 24/7 op de hoogte van het verkeer in het Brussels Hoofdstedelijk Gewest.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@verkeer",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "followers_count": 158,
+            "following_count": 5,
+            "statuses_count": 294,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/nl\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/nl\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": "2024-10-31T19:46:17.946+00:00"
+                },
+                {
+                    "name": "Nieuws Brussel Mobiliteit",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@brusselmobiliteit\" class=\"u-url mention\"\u003e@\u003cspan\u003ebrusselmobiliteit\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "En français",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@trafic\" class=\"u-url mention\"\u003e@\u003cspan\u003etrafic\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "betoging",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/betoging"
+            },
+            {
+                "name": "brussel",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/brussel"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589305095870103",
+        "created_at": "2026-05-17T09:53:33.402Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "nl",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer/statuses/116589305095870103",
+        "url": "https://info.mobilite-mobiliteit.brussels/@verkeer/116589305095870103",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, de Woluwetunnel richting Zaventem is weer open voor het verkeer.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403159492555933",
+            "username": "verkeer",
+            "acct": "verkeer",
+            "display_name": "Verkeer Brussel Mobiliteit",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBrussel Mobiliteit houdt u 24/7 op de hoogte van het verkeer in het Brussels Hoofdstedelijk Gewest.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@verkeer",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "followers_count": 158,
+            "following_count": 5,
+            "statuses_count": 294,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/nl\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/nl\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": "2024-10-31T19:46:17.946+00:00"
+                },
+                {
+                    "name": "Nieuws Brussel Mobiliteit",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@brusselmobiliteit\" class=\"u-url mention\"\u003e@\u003cspan\u003ebrusselmobiliteit\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "En français",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@trafic\" class=\"u-url mention\"\u003e@\u003cspan\u003etrafic\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589304340145737",
+        "created_at": "2026-05-17T09:53:21.870Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116589304340145737",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116589304340145737",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, le tunnel Woluwe direction Zaventem est rouvert à la circulation\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589203686823191",
+        "created_at": "2026-05-17T09:27:46.024Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "nl",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer/statuses/116589203686823191",
+        "url": "https://info.mobilite-mobiliteit.brussels/@verkeer/116589203686823191",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, vanwege de 15km Woluwe is de Woluwetunnel richting Zaventem afgesloten voor het verkeer.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403159492555933",
+            "username": "verkeer",
+            "acct": "verkeer",
+            "display_name": "Verkeer Brussel Mobiliteit",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBrussel Mobiliteit houdt u 24/7 op de hoogte van het verkeer in het Brussels Hoofdstedelijk Gewest.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@verkeer",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "followers_count": 158,
+            "following_count": 5,
+            "statuses_count": 294,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/nl\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/nl\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": "2024-10-31T19:46:17.946+00:00"
+                },
+                {
+                    "name": "Nieuws Brussel Mobiliteit",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@brusselmobiliteit\" class=\"u-url mention\"\u003e@\u003cspan\u003ebrusselmobiliteit\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "En français",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@trafic\" class=\"u-url mention\"\u003e@\u003cspan\u003etrafic\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589202874674155",
+        "created_at": "2026-05-17T09:27:33.631Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116589202874674155",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116589202874674155",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, suite au 15km Woluwe , le tunnel Woluwe direction Zaventem est fermé à la circulation.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589105968337025",
+        "created_at": "2026-05-17T09:02:54.957Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "nl",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer/statuses/116589105968337025",
+        "url": "https://info.mobilite-mobiliteit.brussels/@verkeer/116589105968337025",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, vanwege een technisch incident zijn de tunnels Belliard, Jubelpark en Wet afgesloten voor het verkeer.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403159492555933",
+            "username": "verkeer",
+            "acct": "verkeer",
+            "display_name": "Verkeer Brussel Mobiliteit",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBrussel Mobiliteit houdt u 24/7 op de hoogte van het verkeer in het Brussels Hoofdstedelijk Gewest.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@verkeer",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "followers_count": 158,
+            "following_count": 5,
+            "statuses_count": 294,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/nl\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/nl\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": "2024-10-31T19:46:17.946+00:00"
+                },
+                {
+                    "name": "Nieuws Brussel Mobiliteit",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@brusselmobiliteit\" class=\"u-url mention\"\u003e@\u003cspan\u003ebrusselmobiliteit\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "En français",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@trafic\" class=\"u-url mention\"\u003e@\u003cspan\u003etrafic\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589105225366730",
+        "created_at": "2026-05-17T09:02:43.623Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116589105225366730",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116589105225366730",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, suite à un incident technique, les tunnels Belliard, Cinquantenaire et Loi sont fermés à la circulation.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116589039203878439",
+        "created_at": "2026-05-17T08:45:56.213Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116589039203878439",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116589039203878439",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, fin de l\u0026#39;accident. Le tunnel Annie Cordy direction Midi est rouvert à la circulation.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116588831313163616",
+        "created_at": "2026-05-17T07:53:04.052Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "nl",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer/statuses/116588831313163616",
+        "url": "https://info.mobilite-mobiliteit.brussels/@verkeer/116588831313163616",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, vanwege een ongeval is de Annie Cordytunnel richting Zuid afgesloten voor het verkeer.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403159492555933",
+            "username": "verkeer",
+            "acct": "verkeer",
+            "display_name": "Verkeer Brussel Mobiliteit",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBrussel Mobiliteit houdt u 24/7 op de hoogte van het verkeer in het Brussels Hoofdstedelijk Gewest.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@verkeer",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/verkeer",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/159/492/555/933/original/d47fc73bbb491a5c.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/159/492/555/933/original/698e123c3fcb074e.png",
+            "followers_count": 158,
+            "following_count": 5,
+            "statuses_count": 294,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/nl\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/nl\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": "2024-10-31T19:46:17.946+00:00"
+                },
+                {
+                    "name": "Nieuws Brussel Mobiliteit",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@brusselmobiliteit\" class=\"u-url mention\"\u003e@\u003cspan\u003ebrusselmobiliteit\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "En français",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@trafic\" class=\"u-url mention\"\u003e@\u003cspan\u003etrafic\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116588830542790813",
+        "created_at": "2026-05-17T07:52:52.298Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116588830542790813",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116588830542790813",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/TunnelBru\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eTunnelBru\u003c/span\u003e\u003c/a\u003e, suite à un accident, le tunnel Annie Cordy direction Midi est fermé à la circulation.\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "tunnelbru",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/tunnelbru"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": null,
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    },
+    {
+        "id": "116588153524315688",
+        "created_at": "2026-05-17T05:00:41.815Z",
+        "in_reply_to_id": null,
+        "in_reply_to_account_id": null,
+        "sensitive": false,
+        "spoiler_text": "",
+        "visibility": "public",
+        "language": "fr",
+        "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic/statuses/116588153524315688",
+        "url": "https://info.mobilite-mobiliteit.brussels/@trafic/116588153524315688",
+        "replies_count": 0,
+        "reblogs_count": 0,
+        "favourites_count": 0,
+        "quotes_count": 0,
+        "edited_at": null,
+        "content": "\u003cp\u003e🏃🏃🏃 Aujourd\u0026#39;hui, les \u003ca href=\"https://info.mobilite-mobiliteit.brussels/tags/15kmWoluwe\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003e15kmWoluwe\u003c/span\u003e\u003c/a\u003e traverseront e.a. le boulevard de la Woluwe (R22) et les avenues Vandervelde et de Broqueville (N226).\u003c/p\u003e\u003cp\u003e➡️ Tenez compte de cela lors de vos déplacements. Participant ou spectateur? Prenez les transports en commun.\u003c/p\u003e\u003cp\u003e\u003ca href=\"https://www.zatopekmagazine.com/be-nl/15km-woluwe/praktische-info-voor-de-15km-van-woluwe/#toegang\" target=\"_blank\" rel=\"nofollow noopener\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://www.\u003c/span\u003e\u003cspan class=\"ellipsis\"\u003ezatopekmagazine.com/be-nl/15km\u003c/span\u003e\u003cspan class=\"invisible\"\u003e-woluwe/praktische-info-voor-de-15km-van-woluwe/#toegang\u003c/span\u003e\u003c/a\u003e\u003c/p\u003e",
+        "reblog": null,
+        "account": {
+            "id": "113403346701883239",
+            "username": "trafic",
+            "acct": "trafic",
+            "display_name": "Info-trafic Bruxelles Mobilité",
+            "locked": false,
+            "bot": false,
+            "discoverable": true,
+            "indexable": true,
+            "group": false,
+            "created_at": "2024-10-31T00:00:00.000Z",
+            "note": "\u003cp\u003eBruxelles Mobilité vous tient au courant 24/7 de la situation du trafic en Région de Bruxelles-Capitale.\u003c/p\u003e",
+            "url": "https://info.mobilite-mobiliteit.brussels/@trafic",
+            "uri": "https://info.mobilite-mobiliteit.brussels/users/trafic",
+            "avatar": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "avatar_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/avatars/113/403/346/701/883/239/original/aa77aa946568900f.png",
+            "header": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "header_static": "https://cdn.masto.host/infomobilitemobiliteitbrussels/accounts/headers/113/403/346/701/883/239/original/1c858272d125953c.png",
+            "followers_count": 247,
+            "following_count": 3,
+            "statuses_count": 156,
+            "last_status_at": "2026-05-17",
+            "hide_collections": false,
+            "noindex": false,
+            "emojis": [],
+            "roles": [],
+            "fields": [
+                {
+                    "name": "🌍",
+                    "value": "\u003ca href=\"https://mobilite-mobiliteit.brussels/fr\" target=\"_blank\" rel=\"nofollow noopener me\" translate=\"no\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003emobilite-mobiliteit.brussels/fr\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "News Bruxelles Mobilité",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@bruxellesmobilite\" class=\"u-url mention\"\u003e@\u003cspan\u003ebruxellesmobilite\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                },
+                {
+                    "name": "Nederlands",
+                    "value": "\u003cspan class=\"h-card\" translate=\"no\"\u003e\u003ca href=\"https://info.mobilite-mobiliteit.brussels/@verkeer\" class=\"u-url mention\"\u003e@\u003cspan\u003everkeer\u003c/span\u003e\u003c/a\u003e\u003c/span\u003e",
+                    "verified_at": null
+                }
+            ]
+        },
+        "media_attachments": [],
+        "mentions": [],
+        "tags": [
+            {
+                "name": "15kmwoluwe",
+                "url": "https://info.mobilite-mobiliteit.brussels/tags/15kmwoluwe"
+            }
+        ],
+        "emojis": [],
+        "quote": null,
+        "card": {
+            "url": "https://www.zatopekmagazine.com/be-nl/15km-woluwe/praktische-info-voor-de-15km-van-woluwe/#toegang",
+            "title": "Praktische info voor de 15km van Woluwe - Zatopek Magazine",
+            "description": "Uurrooster Programma 9h15: 400 meter Marsupilami (leerlingen kleuteronderwijs) 9u25: 800 meter Marsupilami (leerlingen lager onderwijs) 9u35: start 25km trail 9u40 : start wandeling 11km 10u15: start 15km 10u45: start 6km Afhalen borstnummers Absolute Run – Jogging Plus Van 21 april tot en met 15 mei. U kunt uw borstnummer ophalen bij Absolute Run – Jogging […]",
+            "language": "nl",
+            "type": "link",
+            "author_name": "",
+            "author_url": "",
+            "provider_name": "Zatopek Magazine",
+            "provider_url": "",
+            "html": "",
+            "width": 569,
+            "height": 404,
+            "image": "https://cdn.masto.host/infomobilitemobiliteitbrussels/cache/preview_cards/images/000/053/665/original/96dba4ef0ee11c4b.webp",
+            "image_description": "",
+            "embed_url": "",
+            "blurhash": "UFH{W302I@XAxi-q4-Wt~jD#xvjYFm-=-pV=",
+            "published_at": null,
+            "authors": []
+        },
+        "poll": null,
+        "quote_approval": {
+            "automatic": [
+                "public"
+            ],
+            "manual": [],
+            "current_user": "denied"
+        }
+    }
+]

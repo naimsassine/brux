@@ -15,7 +15,8 @@
     "ingest:news:bruxellestoday": "tsx scripts/ingestion/bruxellestoday-news.ts",
     "ingest:news:rtbf": "tsx scripts/ingestion/rtbf-news.ts",
     "backfill:news:geo": "tsx scripts/ingestion/backfill-news-geo.ts",
-    "ingest:events": "tsx scripts/ingestion/visit-brussels-events.ts"
+    "ingest:events": "tsx scripts/ingestion/visit-brussels-events.ts",
+    "ingest:roadworks": "tsx scripts/ingestion/roadworks.ts"
   },
   "devDependencies": {
     "@types/proj4": "^2.5.6",

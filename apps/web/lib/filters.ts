@@ -1,5 +1,6 @@
 export const ITEM_TYPES = ["news", "event", "roadwork"] as const
 export type ItemType = (typeof ITEM_TYPES)[number]
+export type TabType = ItemType | "traffic"
 export type DateRange = "today" | "week" | "month" | "all"
 
 // Date bounds only apply when events are shown — news/roadworks are always shown by recency

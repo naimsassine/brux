@@ -1,11 +1,12 @@
 "use client"
 
-import type { ItemType, DateRange } from "../lib/filters"
+import type { ItemType, TabType, DateRange } from "../lib/filters"
 
 interface Props {
-  activeTab: ItemType
-  onTab: (tab: ItemType) => void
+  activeTab: TabType
+  onTab: (tab: TabType) => void
   typeColors: Record<ItemType, string>
+  trafficColor: string
   dateRange: DateRange
   onDateRange: (range: DateRange) => void
   showMetro: boolean
@@ -18,7 +19,7 @@ interface Props {
   onTogglePoliticalSites: () => void
 }
 
-const TAB_LABELS: Record<ItemType, string> = {
+const ITEM_TAB_LABELS: Record<ItemType, string> = {
   news: "News",
   event: "Events",
   roadwork: "Road Works",
@@ -31,10 +32,10 @@ const DATE_LABELS: Record<DateRange, string> = {
   all: "All",
 }
 
-export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onDateRange, showMetro, onToggleMetro, showBusNetwork, onToggleBusNetwork, showRailNetwork, onToggleRailNetwork, showPoliticalSites, onTogglePoliticalSites }: Props) {
+export default function FilterBar({ activeTab, onTab, typeColors, trafficColor, dateRange, onDateRange, showMetro, onToggleMetro, showBusNetwork, onToggleBusNetwork, showRailNetwork, onToggleRailNetwork, showPoliticalSites, onTogglePoliticalSites }: Props) {
   return (
     <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100 flex-wrap">
-      {(Object.keys(TAB_LABELS) as ItemType[]).map((tab) => {
+      {(Object.keys(ITEM_TAB_LABELS) as ItemType[]).map((tab) => {
         const active = activeTab === tab
         return (
           <button
@@ -51,10 +52,32 @@ export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onD
               className="w-2 h-2 rounded-full flex-shrink-0"
               style={{ backgroundColor: active ? "white" : typeColors[tab] }}
             />
-            {TAB_LABELS[tab]}
+            {ITEM_TAB_LABELS[tab]}
           </button>
         )
       })}
+
+      {/* Live traffic tab */}
+      {(() => {
+        const active = activeTab === "traffic"
+        return (
+          <button
+            onClick={() => onTab("traffic")}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
+            style={{
+              borderColor: trafficColor,
+              backgroundColor: active ? trafficColor : "white",
+              color: active ? "white" : trafficColor,
+            }}
+          >
+            <span
+              className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse"
+              style={{ backgroundColor: active ? "white" : trafficColor }}
+            />
+            Live Traffic
+          </button>
+        )
+      })()}
 
       <div className="w-px h-5 bg-gray-200 mx-1" />
 
@@ -87,7 +110,7 @@ export default function FilterBar({ activeTab, onTab, typeColors, dateRange, onD
           className="w-2 h-2 rounded-full flex-shrink-0"
           style={{ backgroundColor: showRailNetwork ? "white" : "#7c3aed" }}
         />
-        Tram & Metro
+        Tram
       </button>
 
       <button

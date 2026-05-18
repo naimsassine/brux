@@ -1,8 +1,9 @@
 "use client"
 
 import React, { useEffect, useRef } from "react"
-import type { ItemType, DateRange } from "../lib/filters"
+import type { ItemType, TabType, DateRange } from "../lib/filters"
 import { getDateBounds } from "../lib/filters"
+import type { TrafficAlert } from "../app/api/traffic/route"
 
 interface MetroLine {
   id: string
@@ -15,11 +16,12 @@ interface Props {
   selectedCommune: number | null
   onSelectCommune: (id: number | null) => void
   typeColors: Record<ItemType, string>
+  trafficColor: string
   showMetro: boolean
   showBusNetwork: boolean
   showRailNetwork: boolean
   showPoliticalSites: boolean
-  activeTab: ItemType
+  activeTab: TabType
   dateRange: DateRange
 }
 
@@ -74,10 +76,11 @@ function makeBelgianFlagImage(cssSize: number): ImageData {
   return ctx.getImageData(0, 0, px, px)
 }
 
-export default function MapView({ selectedCommune, onSelectCommune, typeColors, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, activeTab, dateRange }: Props) {
+export default function MapView({ selectedCommune, onSelectCommune, typeColors, trafficColor, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, activeTab, dateRange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const metroIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const trafficIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const itemsAbortRef = useRef<AbortController | null>(null)
   const PopupCtorRef = useRef<any>(null)
 
@@ -92,7 +95,7 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
         container: containerRef.current!,
         style: "https://tiles.openfreemap.org/styles/liberty",
         center: [4.3517, 50.8503],
-        zoom: 11,
+        zoom: 12.5,
       })
 
       mapRef.current = map
@@ -130,21 +133,53 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
     }
   }, [])
 
-  // Re-fetch map items when tab or date range changes
+  // Re-fetch map items when tab or date range changes (skip for traffic tab)
   useEffect(() => {
-    const map = mapRef.current
-    if (!map) return
+    if (activeTab === "traffic") return
 
     const run = () => {
-      if (map.isStyleLoaded()) fetchAndRenderItems(map, typeColors, activeTab, dateRange, itemsAbortRef)
+      const m = mapRef.current
+      if (m?.isStyleLoaded()) fetchAndRenderItems(m, typeColors, activeTab as ItemType, dateRange, itemsAbortRef)
     }
 
-    if (map.isStyleLoaded()) {
-      run()
-    } else {
-      map.once("load", run)
+    const map = mapRef.current
+    if (!map) {
+      // Map not yet initialized — wait for it (same pattern as metro/bus/rail)
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) { clearInterval(wait); run() }
+      }, 200)
+      return () => clearInterval(wait)
     }
+
+    if (map.isStyleLoaded()) run()
+    else map.once("load", run)
   }, [activeTab, dateRange])
+
+  // Traffic alerts: always shown on map, poll every 2 minutes
+  useEffect(() => {
+    const runTraffic = () => {
+      const map = mapRef.current
+      if (map?.isStyleLoaded()) fetchAndRenderTraffic(map, trafficColor, PopupCtorRef)
+    }
+
+    if (!mapRef.current) {
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) {
+          clearInterval(wait)
+          runTraffic()
+          trafficIntervalRef.current = setInterval(runTraffic, 120_000)
+        }
+      }, 200)
+      return () => clearInterval(wait)
+    }
+
+    runTraffic()
+    trafficIntervalRef.current = setInterval(runTraffic, 120_000)
+
+    return () => {
+      if (trafficIntervalRef.current) clearInterval(trafficIntervalRef.current)
+    }
+  }, [])
 
   // Metro layer: initial load + polling
   useEffect(() => {
@@ -486,6 +521,7 @@ const ABOVE_NETWORK_LAYERS = [
   "eu-sites-circles",
   "eu-sites-labels",
   "be-sites-icons",
+  "traffic-alerts",
   "items-circles",
   "metro-vehicles",
   "metro-vehicle-labels",
@@ -578,4 +614,82 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
   map.addSource("metro-lines", { type: "geojson", data: linesGeojson })
   map.addSource("metro-vehicles", { type: "geojson", data: vehiclesGeojson })
   addMetroLayersToMap(map)
+}
+
+async function fetchAndRenderTraffic(
+  map: any,
+  trafficColor: string,
+  PopupCtorRef: React.MutableRefObject<any>,
+) {
+  try {
+    const res = await fetch("/api/traffic")
+    if (!res.ok) return
+    const alerts: TrafficAlert[] = await res.json()
+
+    const features = alerts
+      .filter((a) => a.lat !== null && a.lng !== null)
+      .map((a) => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [a.lng!, a.lat!] },
+        properties: { id: a.id, content: a.content, location: a.location, createdAt: a.createdAt },
+      }))
+
+    const geojson = { type: "FeatureCollection", features }
+
+    if (map.getSource("traffic-alerts")) {
+      map.getSource("traffic-alerts").setData(geojson)
+      return
+    }
+
+    map.addSource("traffic-alerts", { type: "geojson", data: geojson })
+    map.addLayer({
+      id: "traffic-alerts",
+      type: "circle",
+      source: "traffic-alerts",
+      paint: {
+        "circle-radius": 10,
+        "circle-color": trafficColor,
+        "circle-opacity": 0.9,
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#fff",
+      },
+    })
+    map.addLayer({
+      id: "traffic-alerts-labels",
+      type: "symbol",
+      source: "traffic-alerts",
+      layout: {
+        "text-field": "⚠",
+        "text-size": 11,
+        "text-font": ["Noto Sans Regular"],
+        "text-anchor": "center",
+      },
+      paint: { "text-color": "#fff" },
+    })
+
+    let trafficPopup: any = null
+    map.on("mouseenter", "traffic-alerts", (e: any) => {
+      if (!e.features?.length || !PopupCtorRef.current) return
+      map.getCanvas().style.cursor = "pointer"
+      const p = e.features[0].properties
+      trafficPopup?.remove()
+      trafficPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "280px" })
+        .setLngLat(e.lngLat)
+        .setHTML(`
+          <div style="font-family:system-ui,-apple-system,sans-serif;padding:2px 4px">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${trafficColor};margin-bottom:4px">
+              Live Traffic · ${escapeHtml(p.location ?? "Brussels")}
+            </div>
+            <div style="font-size:12px;color:#374151;line-height:1.5">${escapeHtml(p.content)}</div>
+          </div>`)
+        .addTo(map)
+    })
+    map.on("mouseleave", "traffic-alerts", () => {
+      map.getCanvas().style.cursor = ""
+      trafficPopup?.remove()
+      trafficPopup = null
+    })
+  } catch (e) {
+    console.error("[traffic map]", e)
+  }
 }
