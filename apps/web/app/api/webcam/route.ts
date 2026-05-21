@@ -1,13 +1,14 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
-const PAGE_URL = "https://www.bruxelles.be/webcam-grand-place"
+const CAMERAS: Record<string, string> = {
+  "grand-place": "https://www.bruxelles.be/webcam-grand-place",
+  "brouckere":   "https://www.bruxelles.be/webcam-place-de-brouckere",
+}
 
-// Cached so we don't hammer the page on every request
-let cachedProxied: string | null = null
-let cacheExpiresAt = 0
+const cache: Record<string, { proxied: string; expiresAt: number }> = {}
 
-async function fetchStreamUrl(): Promise<string | null> {
-  const res = await fetch(PAGE_URL, {
+async function fetchStreamUrl(pageUrl: string): Promise<string | null> {
+  const res = await fetch(pageUrl, {
     headers: { "User-Agent": "Mozilla/5.0", Accept: "text/html" },
     cache: "no-store",
   })
@@ -18,15 +19,22 @@ async function fetchStreamUrl(): Promise<string | null> {
   return "https://" + match[0].replace(/\\\//g, "/")
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const cam = req.nextUrl.searchParams.get("cam") ?? "grand-place"
+  const pageUrl = CAMERAS[cam]
+  if (!pageUrl) return NextResponse.json({ error: "unknown camera" }, { status: 400 })
+
   try {
-    if (!cachedProxied || Date.now() > cacheExpiresAt) {
-      const streamUrl = await fetchStreamUrl()
+    const entry = cache[cam]
+    if (!entry || Date.now() > entry.expiresAt) {
+      const streamUrl = await fetchStreamUrl(pageUrl)
       if (!streamUrl) return NextResponse.json({ error: "stream not found" }, { status: 404 })
-      cachedProxied = `/api/webcam/stream?url=${encodeURIComponent(streamUrl)}`
-      cacheExpiresAt = Date.now() + 30 * 60 * 1000 // 30 min
+      cache[cam] = {
+        proxied: `/api/webcam/stream?url=${encodeURIComponent(streamUrl)}`,
+        expiresAt: Date.now() + 30 * 60 * 1000,
+      }
     }
-    return NextResponse.json({ streamUrl: cachedProxied })
+    return NextResponse.json({ streamUrl: cache[cam].proxied })
   } catch (e) {
     console.error("[webcam]", e)
     return NextResponse.json({ error: "internal error" }, { status: 500 })

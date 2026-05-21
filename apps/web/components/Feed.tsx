@@ -7,170 +7,118 @@ import type { TrafficAlert } from "../app/api/traffic/route"
 
 type AlertTier = "critical" | "warning" | "info"
 
-interface AlertMeta {
-  tier: AlertTier
-  label: string
-  dot: string
-  border: string
-  bg: string
-  hoverBg: string
-  tagColor: string
-  titleColor: string
-}
-
-const TIER_STYLES: Record<AlertTier, AlertMeta> = {
-  critical: {
-    tier: "critical",
-    label: "Critical alert",
-    dot: "#dc2626",
-    border: "border-l-4 border-l-red-600 border-red-100",
-    bg: "bg-red-50",
-    hoverBg: "hover:bg-red-100",
-    tagColor: "text-red-600 font-semibold",
-    titleColor: "text-red-900",
-  },
-  warning: {
-    tier: "warning",
-    label: "Warning",
-    dot: "#d97706",
-    border: "border-l-4 border-l-amber-500 border-amber-100",
-    bg: "bg-amber-50",
-    hoverBg: "hover:bg-amber-100",
-    tagColor: "text-amber-600 font-semibold",
-    titleColor: "text-amber-900",
-  },
-  info: {
-    tier: "info",
-    label: "Disruption alert",
-    dot: "#2563eb",
-    border: "border-l-4 border-l-blue-500 border-blue-100",
-    bg: "bg-blue-50",
-    hoverBg: "hover:bg-blue-100",
-    tagColor: "text-blue-600 font-semibold",
-    titleColor: "text-blue-900",
-  },
+const TIER_META: Record<AlertTier, { label: string; color: string; glow: string }> = {
+  critical: { label: "CRITICAL", color: "#ef4444", glow: "#ef444433" },
+  warning:  { label: "WARNING",  color: "#f59e0b", glow: "#f59e0b22" },
+  info:     { label: "ALERT",    color: "#3b82f6", glow: "#3b82f622" },
 }
 
 interface FeedItem {
-  id: string
-  type: string
-  title: string
-  summary: string | null
-  sourceUrl: string | null
-  sourceName: string
+  id:          string
+  type:        string
+  title:       string
+  summary:     string | null
+  sourceUrl:   string | null
+  sourceName:  string
   communeName: string | null
   publishedAt: string
 }
 
 interface Props {
-  type: TabType
-  communeId: number | null
-  dateRange: DateRange
-  typeColors: Record<ItemType, string>
+  type:        TabType
+  communeId:   number | null
+  dateRange:   DateRange
+  typeColors:  Record<ItemType, string>
   trafficColor: string
 }
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr)
-  const now = new Date()
+  const now  = new Date()
   const diff = date.getTime() - now.getTime()
-  const diffAbs = Math.abs(diff)
-  const mins = Math.floor(diffAbs / 60000)
-  const hours = Math.floor(mins / 60)
-  const days = Math.floor(hours / 24)
+  const abs  = Math.abs(diff)
+  const mins = Math.floor(abs / 60000)
+  const hrs  = Math.floor(mins / 60)
+  const days = Math.floor(hrs / 24)
 
   if (diff > 0) {
-    if (days === 0) return "today"
-    if (days === 1) return "tomorrow"
-    if (days < 7) return `in ${days}d`
-    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+    if (days === 0) return "TODAY"
+    if (days === 1) return "TOMORROW"
+    if (days < 7)  return `IN ${days}D`
+    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" }).toUpperCase()
   }
-  if (mins < 60) return `${mins}m ago`
-  if (hours < 24) return `${hours}h ago`
-  return `${days}d ago`
+  if (mins < 60) return `${mins}M AGO`
+  if (hrs  < 24) return `${hrs}H AGO`
+  return `${days}D AGO`
 }
 
 // ── Traffic feed ──────────────────────────────────────────────────────────────
 
 function TrafficFeed({ trafficColor }: { trafficColor: string }) {
-  const [alerts, setAlerts] = useState<TrafficAlert[]>([])
-  const [loading, setLoading] = useState(true)
+  const [alerts, setAlerts]         = useState<TrafficAlert[]>([])
+  const [loading, setLoading]       = useState(true)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const fetch2 = () => {
+  const load = () => {
     fetch("/api/traffic")
       .then((r) => r.json())
-      .then((data: TrafficAlert[]) => {
-        setAlerts(data)
-        setLoading(false)
-        setLastUpdated(new Date())
-      })
+      .then((data: TrafficAlert[]) => { setAlerts(data); setLoading(false); setLastUpdated(new Date()) })
       .catch(() => setLoading(false))
   }
 
   useEffect(() => {
-    fetch2()
-    intervalRef.current = setInterval(fetch2, 120_000)
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
+    load()
+    intervalRef.current = setInterval(load, 120_000)
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [])
 
-  if (loading) {
-    return (
-      <div className="w-[480px] flex-shrink-0 border-r border-gray-200 flex items-center justify-center text-gray-400">
-        Loading traffic…
-      </div>
-    )
-  }
-
   return (
-    <div className="w-[480px] flex-shrink-0 border-r border-gray-200 overflow-y-auto bg-gray-50">
-      <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-2 flex items-center gap-2">
-        <span
-          className="w-2 h-2 rounded-full animate-pulse flex-shrink-0"
-          style={{ backgroundColor: trafficColor }}
-        />
-        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: trafficColor }}>
-          Live Traffic Info
+    <div className="w-full flex flex-col bg-[#080c12] h-full">
+      <div className="flex items-center gap-2 px-4 h-9 border-b border-[#1c2a3a] bg-[#0d1117] flex-shrink-0">
+        <span className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0" style={{ backgroundColor: trafficColor }} />
+        <span className="font-mono text-[9px] tracking-[.2em] uppercase" style={{ color: trafficColor }}>
+          Live Traffic
         </span>
         {lastUpdated && (
-          <span className="text-xs text-gray-400 ml-auto">
-            Updated {formatDate(lastUpdated.toISOString())}
+          <span className="ml-auto font-mono text-[9px] text-[#3d4f64]">
+            UPD {formatDate(lastUpdated.toISOString())}
           </span>
         )}
       </div>
 
-      {alerts.length === 0 ? (
-        <div className="p-8 text-center text-gray-400">No active traffic alerts</div>
-      ) : (
-        alerts.map((alert) => (
+      <div className="overflow-y-auto flex-1">
+        {loading ? (
+          <div className="flex items-center justify-center h-20 font-mono text-[10px] text-[#3d4f64] tracking-widest">
+            LOADING…
+          </div>
+        ) : alerts.length === 0 ? (
+          <div className="flex items-center justify-center h-20 font-mono text-[10px] text-[#3d4f64] tracking-widest">
+            NO ACTIVE ALERTS
+          </div>
+        ) : alerts.map((alert) => (
           <article
             key={alert.id}
-            className="border-b border-gray-100 bg-white hover:bg-red-50 px-4 py-3 transition-colors border-l-4 border-l-red-400"
+            className="border-b border-[#1c2a3a] px-4 py-3 hover:bg-[#131a24] transition-colors"
+            style={{ borderLeft: `2px solid ${trafficColor}` }}
           >
             <div className="flex items-center gap-2 mb-1.5">
-              <span
-                className="w-2 h-2 rounded-full flex-shrink-0"
-                style={{ backgroundColor: trafficColor }}
-              />
-              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: trafficColor }}>
+              <span className="font-mono text-[9px] tracking-[.15em] uppercase" style={{ color: trafficColor }}>
                 {alert.location ?? "Brussels"}
               </span>
-              <span className="text-xs text-gray-300">·</span>
-              <span className="text-xs text-gray-400">{formatDate(alert.createdAt)}</span>
+              <span className="text-[#1c2a3a]">·</span>
+              <span className="font-mono text-[9px] text-[#3d4f64]">{formatDate(alert.createdAt)}</span>
               {alert.lat && (
                 <>
-                  <span className="text-xs text-gray-300">·</span>
-                  <span className="text-xs text-gray-400">📍 on map</span>
+                  <span className="text-[#1c2a3a]">·</span>
+                  <span className="font-mono text-[9px] text-[#3d4f64]">⊕ MAP</span>
                 </>
               )}
             </div>
-            <p className="text-sm text-gray-900 leading-snug">{alert.content}</p>
+            <p className="text-xs text-[#c9d1d9] leading-relaxed">{alert.content}</p>
           </article>
-        ))
-      )}
+        ))}
+      </div>
     </div>
   )
 }
@@ -178,27 +126,21 @@ function TrafficFeed({ trafficColor }: { trafficColor: string }) {
 // ── Standard item feed ────────────────────────────────────────────────────────
 
 export default function Feed({ type, communeId, dateRange, typeColors, trafficColor }: Props) {
-  if (type === "traffic") {
-    return <TrafficFeed trafficColor={trafficColor} />
-  }
-
+  if (type === "traffic") return <TrafficFeed trafficColor={trafficColor} />
   return <ItemFeed type={type} communeId={communeId} dateRange={dateRange} typeColors={typeColors} />
 }
 
 function ItemFeed({
-  type,
-  communeId,
-  dateRange,
-  typeColors,
+  type, communeId, dateRange, typeColors,
 }: {
-  type: ItemType
-  communeId: number | null
-  dateRange: DateRange
+  type:       ItemType
+  communeId:  number | null
+  dateRange:  DateRange
   typeColors: Record<ItemType, string>
 }) {
-  const [feedItems, setFeedItems] = useState<FeedItem[]>([])
+  const [feedItems, setFeedItems]   = useState<FeedItem[]>([])
   const [alertTiers, setAlertTiers] = useState<Map<string, AlertTier>>(new Map())
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading]       = useState(true)
 
   useEffect(() => {
     if (type !== "news") { setAlertTiers(new Map()); return }
@@ -217,86 +159,108 @@ function ItemFeed({
     if (communeId) params.set("commune", String(communeId))
     const { dateFrom, dateTo } = getDateBounds(dateRange, [type])
     if (dateFrom) params.set("dateFrom", dateFrom)
-    if (dateTo) params.set("dateTo", dateTo)
+    if (dateTo)   params.set("dateTo", dateTo)
 
     fetch(`/api/items?${params}`)
       .then((r) => r.json())
-      .then((data) => {
-        setFeedItems(data)
-        setLoading(false)
-      })
+      .then((data) => { setFeedItems(data); setLoading(false) })
   }, [type, communeId, dateRange])
 
-  if (loading) {
-    return (
-      <div className="w-[480px] flex-shrink-0 border-r border-gray-200 flex items-center justify-center text-gray-400">
-        Loading...
-      </div>
-    )
-  }
-
+  const color = typeColors[type]
   const tierOrder: Record<AlertTier, number> = { critical: 0, warning: 1, info: 2 }
 
+  const sorted = [...feedItems].sort((a, b) => {
+    const at = alertTiers.get(a.id), bt = alertTiers.get(b.id)
+    return (at !== undefined ? tierOrder[at] : 10) - (bt !== undefined ? tierOrder[bt] : 10)
+  })
+
   return (
-    <div className="w-[480px] flex-shrink-0 border-r border-gray-200 overflow-y-auto bg-gray-50">
-      {feedItems.length === 0 ? (
-        <div className="p-8 text-center text-gray-400">No items found</div>
-      ) : (
-        [...feedItems]
-          .sort((a, b) => {
-            const aTier = alertTiers.get(a.id)
-            const bTier = alertTiers.get(b.id)
-            const aOrder = aTier !== undefined ? tierOrder[aTier] : 10
-            const bOrder = bTier !== undefined ? tierOrder[bTier] : 10
-            return aOrder - bOrder
-          })
-          .map((item) => {
-            const tier = alertTiers.get(item.id)
-            const style = tier ? TIER_STYLES[tier] : null
+    <div className="w-full flex flex-col bg-[#080c12] h-full">
+      {/* Feed header */}
+      <div className="flex items-center gap-2 px-4 h-9 border-b border-[#1c2a3a] bg-[#0d1117] flex-shrink-0">
+        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+        <span className="font-mono text-[9px] tracking-[.2em] uppercase" style={{ color }}>
+          {type === "news" ? "Intel Feed" : type === "event" ? "Events" : "Roadworks"}
+        </span>
+        {!loading && (
+          <span className="ml-auto font-mono text-[9px] text-[#3d4f64]">
+            {sorted.length} ITEMS
+          </span>
+        )}
+      </div>
 
-            return (
-              <article
-                key={item.id}
-                className={`border-b px-4 py-3 transition-colors ${
-                  style
-                    ? `${style.bg} ${style.border} ${style.hoverBg}`
-                    : "bg-white border-gray-100 hover:bg-gray-50"
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-1">
+      <div className="overflow-y-auto flex-1">
+        {loading ? (
+          <div className="flex items-center justify-center h-20 font-mono text-[10px] text-[#3d4f64] tracking-widest">
+            LOADING…
+          </div>
+        ) : sorted.length === 0 ? (
+          <div className="flex items-center justify-center h-20 font-mono text-[10px] text-[#3d4f64] tracking-widest">
+            NO DATA
+          </div>
+        ) : sorted.map((item) => {
+          const tier      = alertTiers.get(item.id)
+          const tierMeta  = tier ? TIER_META[tier] : null
+          const itemColor = tierMeta ? tierMeta.color : (typeColors[item.type as ItemType] ?? color)
+
+          return (
+            <article
+              key={item.id}
+              className="border-b border-[#1c2a3a] px-4 py-3 transition-colors hover:bg-[#131a24]"
+              style={{
+                borderLeft:  `2px solid ${itemColor}`,
+                background:  tierMeta ? `${tierMeta.glow}` : undefined,
+              }}
+            >
+              {/* Meta row */}
+              <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                {tierMeta && (
                   <span
-                    className="w-2 h-2 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: style ? style.dot : (typeColors[item.type as ItemType] ?? "#ccc") }}
-                  />
-                  <span className={`text-xs uppercase tracking-wide ${style ? style.tagColor : "text-gray-400"}`}>
-                    {style ? style.label : (item.communeName ?? "Brussels")}
-                  </span>
-                  <span className="text-xs text-gray-300">·</span>
-                  <span className="text-xs text-gray-400">{formatDate(item.publishedAt)}</span>
-                  <span className="text-xs text-gray-300">·</span>
-                  <span className="text-xs text-gray-400">{item.sourceName}</span>
-                </div>
-
-                {item.sourceUrl ? (
-                  <a
-                    href={item.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`font-medium text-sm hover:underline leading-snug block mb-1 ${style ? style.titleColor : "text-gray-900"}`}
+                    className="font-mono text-[9px] tracking-[.15em] px-1.5 py-0.5"
+                    style={{ color: tierMeta.color, background: `${tierMeta.color}22`, border: `1px solid ${tierMeta.color}44` }}
                   >
-                    {item.title}
-                  </a>
-                ) : (
-                  <p className={`font-medium text-sm leading-snug mb-1 ${style ? style.titleColor : "text-gray-900"}`}>{item.title}</p>
+                    {tierMeta.label}
+                  </span>
                 )}
+                <span className="font-mono text-[9px] tracking-[.12em] uppercase" style={{ color: itemColor }}>
+                  {item.sourceName}
+                </span>
+                <span className="text-[#1c2a3a] font-mono text-[9px]">·</span>
+                <span className="font-mono text-[9px] text-[#3d4f64]">
+                  {formatDate(item.publishedAt)}
+                </span>
+                {item.communeName && (
+                  <>
+                    <span className="text-[#1c2a3a] font-mono text-[9px]">·</span>
+                    <span className="font-mono text-[9px] text-[#6e7f96] uppercase">
+                      {item.communeName}
+                    </span>
+                  </>
+                )}
+              </div>
 
-                {item.summary && (
-                  <p className="text-xs text-gray-500 line-clamp-2">{item.summary}</p>
-                )}
-              </article>
-            )
-          })
-      )}
+              {/* Title */}
+              {item.sourceUrl ? (
+                <a
+                  href={item.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-[13px] text-[#c9d1d9] leading-snug hover:text-white transition-colors mb-1"
+                >
+                  {item.title}
+                </a>
+              ) : (
+                <p className="text-[13px] text-[#c9d1d9] leading-snug mb-1">{item.title}</p>
+              )}
+
+              {/* Summary */}
+              {item.summary && (
+                <p className="text-[11px] text-[#6e7f96] line-clamp-2 leading-relaxed">{item.summary}</p>
+              )}
+            </article>
+          )
+        })}
+      </div>
     </div>
   )
 }

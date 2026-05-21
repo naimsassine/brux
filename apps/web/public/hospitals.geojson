@@ -1,0 +1,18 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "name": "UZ Brussel", "address": "Laarbeeklaan 101, Jette" }, "geometry": { "type": "Point", "coordinates": [4.3087, 50.8918] } },
+    { "type": "Feature", "properties": { "name": "CHU Saint-Pierre", "address": "Rue Haute 322, Bruxelles" }, "geometry": { "type": "Point", "coordinates": [4.3487, 50.8368] } },
+    { "type": "Feature", "properties": { "name": "Cliniques Universitaires Saint-Luc", "address": "Avenue Hippocrate 10, Woluwe-Saint-Lambert" }, "geometry": { "type": "Point", "coordinates": [4.4186, 50.8500] } },
+    { "type": "Feature", "properties": { "name": "Hôpital Erasme", "address": "Route de Lennik 808, Anderlecht" }, "geometry": { "type": "Point", "coordinates": [4.2721, 50.8128] } },
+    { "type": "Feature", "properties": { "name": "Clinique Saint-Jean", "address": "Bd du Jardin Botanique 32, Bruxelles" }, "geometry": { "type": "Point", "coordinates": [4.3576, 50.8548] } },
+    { "type": "Feature", "properties": { "name": "Hôpital Brugmann", "address": "Place Van Gehuchten 4, Laeken" }, "geometry": { "type": "Point", "coordinates": [4.3368, 50.8802] } },
+    { "type": "Feature", "properties": { "name": "Institut Jules Bordet", "address": "Rue Meylemeersch 90, Anderlecht" }, "geometry": { "type": "Point", "coordinates": [4.3076, 50.8320] } },
+    { "type": "Feature", "properties": { "name": "Hôpital Enfants Reine Fabiola", "address": "Avenue JJ Crocq 15, Laeken" }, "geometry": { "type": "Point", "coordinates": [4.3312, 50.8778] } },
+    { "type": "Feature", "properties": { "name": "CHIREC Delta", "address": "Bd du Triomphe 201, Ixelles" }, "geometry": { "type": "Point", "coordinates": [4.3934, 50.8198] } },
+    { "type": "Feature", "properties": { "name": "Clinique Sainte-Anne Saint-Rémi", "address": "Rue Docteur Huet 2, Anderlecht" }, "geometry": { "type": "Point", "coordinates": [4.3148, 50.8381] } },
+    { "type": "Feature", "properties": { "name": "Iris Sud — Molière", "address": "Rue Marconi 142, Forest" }, "geometry": { "type": "Point", "coordinates": [4.3263, 50.8052] } },
+    { "type": "Feature", "properties": { "name": "Iris Sud — Etterbeek-Ixelles", "address": "Rue Jean Paquot 63, Ixelles" }, "geometry": { "type": "Point", "coordinates": [4.3820, 50.8318] } },
+    { "type": "Feature", "properties": { "name": "Clinique du Parc Léopold", "address": "Rue Froissart 38, Etterbeek" }, "geometry": { "type": "Point", "coordinates": [4.3798, 50.8420] } }
+  ]
+}

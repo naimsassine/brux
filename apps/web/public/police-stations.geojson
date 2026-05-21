@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Police — Bruxelles Centre", "zone": "Zone Bruxelles-Capitale/Ixelles" }, "geometry": { "type": "Point", "coordinates": [4.3490, 50.8452] } },
+    { "type": "Feature", "properties": { "name": "Police — Ixelles", "zone": "Zone Bruxelles-Capitale/Ixelles" }, "geometry": { "type": "Point", "coordinates": [4.3719, 50.8282] } },
+    { "type": "Feature", "properties": { "name": "Police — Anderlecht", "zone": "Zone Ouest" }, "geometry": { "type": "Point", "coordinates": [4.3095, 50.8361] } },
+    { "type": "Feature", "properties": { "name": "Police — Molenbeek", "zone": "Zone Ouest" }, "geometry": { "type": "Point", "coordinates": [4.3176, 50.8555] } },
+    { "type": "Feature", "properties": { "name": "Police — Berchem-Sainte-Agathe", "zone": "Zone Ouest" }, "geometry": { "type": "Point", "coordinates": [4.3015, 50.8759] } },
+    { "type": "Feature", "properties": { "name": "Police — Schaerbeek", "zone": "Zone Schaerbeek/Saint-Josse" }, "geometry": { "type": "Point", "coordinates": [4.3740, 50.8672] } },
+    { "type": "Feature", "properties": { "name": "Police — Saint-Josse-ten-Noode", "zone": "Zone Schaerbeek/Saint-Josse" }, "geometry": { "type": "Point", "coordinates": [4.3659, 50.8556] } },
+    { "type": "Feature", "properties": { "name": "Police — Etterbeek", "zone": "Zone Montgomery" }, "geometry": { "type": "Point", "coordinates": [4.3916, 50.8380] } },
+    { "type": "Feature", "properties": { "name": "Police — Woluwe-Saint-Lambert", "zone": "Zone Montgomery" }, "geometry": { "type": "Point", "coordinates": [4.4113, 50.8643] } },
+    { "type": "Feature", "properties": { "name": "Police — Woluwe-Saint-Pierre", "zone": "Zone Montgomery" }, "geometry": { "type": "Point", "coordinates": [4.4374, 50.8307] } },
+    { "type": "Feature", "properties": { "name": "Police — Forest", "zone": "Zone Midi" }, "geometry": { "type": "Point", "coordinates": [4.3278, 50.8148] } },
+    { "type": "Feature", "properties": { "name": "Police — Saint-Gilles", "zone": "Zone Midi" }, "geometry": { "type": "Point", "coordinates": [4.3484, 50.8278] } },
+    { "type": "Feature", "properties": { "name": "Police — Uccle", "zone": "Zone Midi" }, "geometry": { "type": "Point", "coordinates": [4.3484, 50.7971] } },
+    { "type": "Feature", "properties": { "name": "Police — Watermael-Boitsfort", "zone": "Zone Midi" }, "geometry": { "type": "Point", "coordinates": [4.4217, 50.8006] } },
+    { "type": "Feature", "properties": { "name": "Police — Auderghem", "zone": "Zone Midi" }, "geometry": { "type": "Point", "coordinates": [4.4270, 50.8161] } },
+    { "type": "Feature", "properties": { "name": "Police — Jette", "zone": "Zone Nord" }, "geometry": { "type": "Point", "coordinates": [4.3261, 50.8802] } },
+    { "type": "Feature", "properties": { "name": "Police — Ganshoren", "zone": "Zone Nord" }, "geometry": { "type": "Point", "coordinates": [4.3155, 50.8750] } },
+    { "type": "Feature", "properties": { "name": "Police — Koekelberg", "zone": "Zone Nord" }, "geometry": { "type": "Point", "coordinates": [4.3278, 50.8664] } },
+    { "type": "Feature", "properties": { "name": "Police — Evere", "zone": "Zone Nord" }, "geometry": { "type": "Point", "coordinates": [4.3912, 50.8682] } }
+  ]
+}

@@ -35,14 +35,42 @@ function escapeHtml(str: string): string {
 
 function buildPopupHtml(props: any, typeColors: Record<string, string>): string {
   const color = typeColors[props.type] ?? "#888"
-  const meta = [props.type, props.communeName].filter(Boolean).join(" · ")
+  const meta = [props.type?.toUpperCase(), props.communeName?.toUpperCase()].filter(Boolean).join(" · ")
   return `
-    <div style="font-family:system-ui,-apple-system,sans-serif;max-width:240px;padding:2px 4px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${color};margin-bottom:5px">${escapeHtml(meta)}</div>
-      <div style="font-size:13px;font-weight:500;line-height:1.4;color:#111;margin-bottom:3px">${escapeHtml(props.title ?? "")}</div>
-      <div style="font-size:11px;color:#9ca3af">${escapeHtml(props.sourceName ?? "")}</div>
+    <div style="font-family:ui-monospace,SFMono-Regular,'SF Mono',monospace;max-width:240px;padding:2px 0">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:${color};margin-bottom:6px">${escapeHtml(meta)}</div>
+      <div style="font-size:12px;font-weight:500;line-height:1.45;color:#c9d1d9;margin-bottom:5px;font-family:-apple-system,sans-serif">${escapeHtml(props.title ?? "")}</div>
+      <div style="font-size:9px;color:#3d4f64;text-transform:uppercase;letter-spacing:.1em">${escapeHtml(props.sourceName ?? "")}</div>
     </div>
   `
+}
+
+function makeHospitalImage(cssSize: number): ImageData {
+  const px = cssSize * 2
+  const canvas = document.createElement("canvas")
+  canvas.width = px
+  canvas.height = px
+  const ctx = canvas.getContext("2d")!
+  const r = px / 2
+
+  ctx.beginPath()
+  ctx.arc(r, r, r, 0, Math.PI * 2)
+  ctx.fillStyle = "#dc2626"
+  ctx.fill()
+
+  ctx.fillStyle = "#ffffff"
+  const size = px * 0.55
+  const thick = px * 0.20
+  ctx.fillRect(r - size / 2, r - thick / 2, size, thick)
+  ctx.fillRect(r - thick / 2, r - size / 2, thick, size)
+
+  ctx.beginPath()
+  ctx.arc(r, r, r - 2, 0, Math.PI * 2)
+  ctx.strokeStyle = "#ffffff"
+  ctx.lineWidth = 3
+  ctx.stroke()
+
+  return ctx.getImageData(0, 0, px, px)
 }
 
 // Renders at 2× resolution so it appears crisp when addImage is called with { pixelRatio: 2 }
@@ -118,6 +146,81 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
           map.getCanvas().style.cursor = ""
           activePopup?.remove()
           activePopup = null
+        })
+
+        // Police stations — always visible, no toggle
+        map.addSource("police-stations", { type: "geojson", data: "/police-stations.geojson" })
+
+        map.loadImage("/police_logo.webp").then(({ data: image }: any) => {
+          map.addImage("police-icon", image, { pixelRatio: 4 })
+          map.addLayer({
+            id: "police-icons",
+            type: "symbol",
+            source: "police-stations",
+            layout: {
+              "icon-image": "police-icon",
+              "icon-size": 0.1,
+              "icon-allow-overlap": true,
+            },
+          })
+
+          let policePopup: any = null
+          map.on("mouseenter", "police-icons", (e: any) => {
+            if (!e.features?.length || !PopupCtorRef.current) return
+            map.getCanvas().style.cursor = "pointer"
+            const p = e.features[0].properties
+            policePopup?.remove()
+            policePopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "220px" })
+              .setLngLat(e.lngLat)
+              .setHTML(`
+                <div style="font-family:ui-monospace,monospace;padding:2px 0">
+                  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#60a5fa;margin-bottom:6px">POLICE</div>
+                  <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:3px;font-family:-apple-system,sans-serif">${escapeHtml(p.name)}</div>
+                  <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">${escapeHtml(p.zone)}</div>
+                </div>`)
+              .addTo(map)
+          })
+          map.on("mouseleave", "police-icons", () => {
+            map.getCanvas().style.cursor = ""
+            policePopup?.remove()
+            policePopup = null
+          })
+        }).catch((e: any) => console.error("[police] image load error", e))
+
+        // Hospitals — always visible, no toggle
+        map.addSource("hospitals", { type: "geojson", data: "/hospitals.geojson" })
+        map.addImage("hospital-icon", makeHospitalImage(20), { pixelRatio: 2 })
+        map.addLayer({
+          id: "hospital-icons",
+          type: "symbol",
+          source: "hospitals",
+          layout: {
+            "icon-image": "hospital-icon",
+            "icon-size": 1,
+            "icon-allow-overlap": true,
+          },
+        })
+
+        let hospitalPopup: any = null
+        map.on("mouseenter", "hospital-icons", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          map.getCanvas().style.cursor = "pointer"
+          const p = e.features[0].properties
+          hospitalPopup?.remove()
+          hospitalPopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "220px" })
+            .setLngLat(e.lngLat)
+            .setHTML(`
+              <div style="font-family:ui-monospace,monospace;padding:2px 0">
+                <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#f87171;margin-bottom:6px">HOSPITAL</div>
+                <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:3px;font-family:-apple-system,sans-serif">${escapeHtml(p.name)}</div>
+                <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">${escapeHtml(p.address)}</div>
+              </div>`)
+            .addTo(map)
+        })
+        map.on("mouseleave", "hospital-icons", () => {
+          map.getCanvas().style.cursor = ""
+          hospitalPopup?.remove()
+          hospitalPopup = null
         })
       })
 
@@ -340,10 +443,10 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
           euPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "240px" })
             .setLngLat(e.lngLat)
             .setHTML(`
-              <div style="font-family:system-ui,-apple-system,sans-serif;padding:2px 4px">
-                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#003399;margin-bottom:4px">EU Institution</div>
-                <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:2px">${escapeHtml(p.name)}</div>
-                <div style="font-size:11px;color:#6b7280">${escapeHtml(p.description)}</div>
+              <div style="font-family:ui-monospace,monospace;padding:2px 0">
+                <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#60a5fa;margin-bottom:6px">EU INSTITUTION</div>
+                <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(p.name)}</div>
+                <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">${escapeHtml(p.description)}</div>
               </div>`)
             .addTo(map)
         })
@@ -363,6 +466,9 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
             "text-size": 13,
             "text-font": ["Noto Sans Regular"],
             "text-anchor": "center",
+            "text-allow-overlap": false,
+            "text-ignore-placement": false,
+            "text-optional": true,
           },
           paint: { "text-color": "#ffcc00" },
         })
@@ -396,10 +502,10 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
           bePopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "240px" })
             .setLngLat(e.lngLat)
             .setHTML(`
-              <div style="font-family:system-ui,-apple-system,sans-serif;padding:2px 4px">
-                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#CC0000;margin-bottom:4px">Belgian Politics</div>
-                <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:2px">${escapeHtml(p.name)}</div>
-                <div style="font-size:11px;color:#6b7280">${escapeHtml(p.description)}</div>
+              <div style="font-family:ui-monospace,monospace;padding:2px 0">
+                <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#f87171;margin-bottom:6px">BELGIAN POLITICS</div>
+                <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(p.name)}</div>
+                <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">${escapeHtml(p.description)}</div>
               </div>`)
             .addTo(map)
         })
@@ -575,6 +681,10 @@ function addMetroLayersToMap(map: any) {
         "text-size": 9,
         "text-font": ["Noto Sans Regular"],
         "text-anchor": "center",
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+        "text-optional": true,
+        "text-padding": 2,
       },
       paint: { "text-color": "#fff" },
     })
@@ -676,11 +786,11 @@ async function fetchAndRenderTraffic(
       trafficPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "280px" })
         .setLngLat(e.lngLat)
         .setHTML(`
-          <div style="font-family:system-ui,-apple-system,sans-serif;padding:2px 4px">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${trafficColor};margin-bottom:4px">
-              Live Traffic · ${escapeHtml(p.location ?? "Brussels")}
+          <div style="font-family:ui-monospace,monospace;padding:2px 0">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:${trafficColor};margin-bottom:6px">
+              TRAFFIC · ${escapeHtml((p.location ?? "Brussels").toUpperCase())}
             </div>
-            <div style="font-size:12px;color:#374151;line-height:1.5">${escapeHtml(p.content)}</div>
+            <div style="font-size:12px;color:#c9d1d9;line-height:1.5;font-family:-apple-system,sans-serif">${escapeHtml(p.content)}</div>
           </div>`)
         .addTo(map)
     })

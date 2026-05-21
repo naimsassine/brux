@@ -19,148 +19,131 @@ interface Props {
   onTogglePoliticalSites: () => void
 }
 
-const ITEM_TAB_LABELS: Record<ItemType, string> = {
-  news: "News",
-  event: "Events",
-  roadwork: "Road Works",
+const ITEM_TABS: { key: ItemType; label: string }[] = [
+  { key: "news",     label: "NEWS"      },
+  { key: "event",    label: "EVENTS"    },
+  { key: "roadwork", label: "ROADWORKS" },
+]
+
+const DATE_OPTS: { key: DateRange; label: string }[] = [
+  { key: "today", label: "TODAY" },
+  { key: "week",  label: "7D"    },
+  { key: "month", label: "30D"   },
+  { key: "all",   label: "ALL"   },
+]
+
+const LAYERS: {
+  key: "metro" | "rail" | "bus" | "political"
+  label: string
+  color: string
+  show: (p: Props) => boolean
+  toggle: (p: Props) => void
+}[] = [
+  { key: "metro",    label: "METRO",    color: "#1a56a0", show: p => p.showMetro,         toggle: p => p.onToggleMetro()         },
+  { key: "rail",     label: "TRAM",     color: "#7c3aed", show: p => p.showRailNetwork,   toggle: p => p.onToggleRailNetwork()   },
+  { key: "bus",      label: "BUS",      color: "#16a34a", show: p => p.showBusNetwork,    toggle: p => p.onToggleBusNetwork()    },
+  { key: "political",label: "POLITICS", color: "#b45309", show: p => p.showPoliticalSites,toggle: p => p.onTogglePoliticalSites()},
+]
+
+function Divider() {
+  return <span className="text-[#1c2a3a] font-mono text-xs select-none mx-0.5">|</span>
 }
 
-const DATE_LABELS: Record<DateRange, string> = {
-  today: "Today",
-  week: "This week",
-  month: "This month",
-  all: "All",
-}
+export default function FilterBar(props: Props) {
+  const { activeTab, onTab, typeColors, trafficColor, dateRange, onDateRange } = props
 
-export default function FilterBar({ activeTab, onTab, typeColors, trafficColor, dateRange, onDateRange, showMetro, onToggleMetro, showBusNetwork, onToggleBusNetwork, showRailNetwork, onToggleRailNetwork, showPoliticalSites, onTogglePoliticalSites }: Props) {
   return (
-    <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100 flex-wrap">
-      {(Object.keys(ITEM_TAB_LABELS) as ItemType[]).map((tab) => {
-        const active = activeTab === tab
+    <div className="flex items-center gap-1 px-4 h-9 bg-[#080c12] border-b border-[#1c2a3a] flex-shrink-0 overflow-x-auto">
+
+      {/* Feed tabs */}
+      {ITEM_TABS.map(({ key, label }) => {
+        const active = activeTab === key
+        const color  = typeColors[key]
         return (
           <button
-            key={tab}
-            onClick={() => onTab(tab)}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
+            key={key}
+            onClick={() => onTab(key)}
+            className="flex items-center gap-1.5 px-2.5 h-6 font-mono text-[9px] tracking-[.15em] transition-all"
             style={{
-              borderColor: typeColors[tab],
-              backgroundColor: active ? typeColors[tab] : "white",
-              color: active ? "white" : typeColors[tab],
+              color:           active ? color : "#3d4f64",
+              borderBottom:    active ? `1px solid ${color}` : "1px solid transparent",
+              background:      active ? `${color}12` : "transparent",
             }}
           >
             <span
-              className="w-2 h-2 rounded-full flex-shrink-0"
-              style={{ backgroundColor: active ? "white" : typeColors[tab] }}
+              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+              style={{ backgroundColor: active ? color : "#3d4f64" }}
             />
-            {ITEM_TAB_LABELS[tab]}
+            {label}
           </button>
         )
       })}
 
-      {/* Live traffic tab */}
+      {/* Traffic */}
       {(() => {
         const active = activeTab === "traffic"
         return (
           <button
             onClick={() => onTab("traffic")}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
+            className="flex items-center gap-1.5 px-2.5 h-6 font-mono text-[9px] tracking-[.15em] transition-all"
             style={{
-              borderColor: trafficColor,
-              backgroundColor: active ? trafficColor : "white",
-              color: active ? "white" : trafficColor,
+              color:        active ? trafficColor : "#3d4f64",
+              borderBottom: active ? `1px solid ${trafficColor}` : "1px solid transparent",
+              background:   active ? `${trafficColor}12` : "transparent",
             }}
           >
-            <span
-              className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse"
-              style={{ backgroundColor: active ? "white" : trafficColor }}
-            />
-            Live Traffic
+            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 animate-pulse"
+              style={{ backgroundColor: active ? trafficColor : "#ef444466" }} />
+            TRAFFIC
           </button>
         )
       })()}
 
-      <div className="w-px h-5 bg-gray-200 mx-1" />
+      <Divider />
 
-      <button
-        onClick={onToggleMetro}
-        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
-        style={{
-          borderColor: "#1a56a0",
-          backgroundColor: showMetro ? "#1a56a0" : "white",
-          color: showMetro ? "white" : "#1a56a0",
-        }}
-      >
-        <span
-          className="w-2 h-2 rounded-full flex-shrink-0"
-          style={{ backgroundColor: showMetro ? "white" : "#1a56a0" }}
-        />
-        Metro
-      </button>
+      {/* Layer toggles */}
+      {LAYERS.map(({ key, label, color, show, toggle }) => {
+        const on = show(props)
+        return (
+          <button
+            key={key}
+            onClick={() => toggle(props)}
+            className="flex items-center gap-1.5 px-2.5 h-6 font-mono text-[9px] tracking-[.15em] transition-all"
+            style={{
+              color:        on ? color : "#3d4f64",
+              borderBottom: on ? `1px solid ${color}` : "1px solid transparent",
+              background:   on ? `${color}12` : "transparent",
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+              style={{ backgroundColor: on ? color : "#3d4f64" }}
+            />
+            {label}
+          </button>
+        )
+      })}
 
-      <button
-        onClick={onToggleRailNetwork}
-        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
-        style={{
-          borderColor: "#7c3aed",
-          backgroundColor: showRailNetwork ? "#7c3aed" : "white",
-          color: showRailNetwork ? "white" : "#7c3aed",
-        }}
-      >
-        <span
-          className="w-2 h-2 rounded-full flex-shrink-0"
-          style={{ backgroundColor: showRailNetwork ? "white" : "#7c3aed" }}
-        />
-        Tram
-      </button>
+      <Divider />
 
-      <button
-        onClick={onToggleBusNetwork}
-        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
-        style={{
-          borderColor: "#16a34a",
-          backgroundColor: showBusNetwork ? "#16a34a" : "white",
-          color: showBusNetwork ? "white" : "#16a34a",
-        }}
-      >
-        <span
-          className="w-2 h-2 rounded-full flex-shrink-0"
-          style={{ backgroundColor: showBusNetwork ? "white" : "#16a34a" }}
-        />
-        Bus
-      </button>
-
-      <button
-        onClick={onTogglePoliticalSites}
-        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-all"
-        style={{
-          borderColor: "#1e3a5f",
-          backgroundColor: showPoliticalSites ? "#1e3a5f" : "white",
-          color: showPoliticalSites ? "white" : "#1e3a5f",
-        }}
-      >
-        <span
-          className="w-2 h-2 rounded-full flex-shrink-0"
-          style={{ backgroundColor: showPoliticalSites ? "white" : "#1e3a5f" }}
-        />
-        Political Sites
-      </button>
-
-      <div className="w-px h-5 bg-gray-200 mx-1" />
-
-      {(Object.keys(DATE_LABELS) as DateRange[]).map((range) => (
-        <button
-          key={range}
-          onClick={() => onDateRange(range)}
-          className="px-3 py-1 rounded-full text-sm font-medium border transition-all"
-          style={{
-            borderColor: dateRange === range ? "#6b7280" : "#e5e7eb",
-            backgroundColor: dateRange === range ? "#6b7280" : "white",
-            color: dateRange === range ? "white" : "#6b7280",
-          }}
-        >
-          {DATE_LABELS[range]}
-        </button>
-      ))}
+      {/* Date range */}
+      {DATE_OPTS.map(({ key, label }) => {
+        const active = dateRange === key
+        return (
+          <button
+            key={key}
+            onClick={() => onDateRange(key)}
+            className="px-2.5 h-6 font-mono text-[9px] tracking-[.15em] transition-all"
+            style={{
+              color:        active ? "#c9d1d9" : "#3d4f64",
+              borderBottom: active ? "1px solid #6e7f96" : "1px solid transparent",
+              background:   active ? "#ffffff08" : "transparent",
+            }}
+          >
+            {label}
+          </button>
+        )
+      })}
     </div>
   )
 }
