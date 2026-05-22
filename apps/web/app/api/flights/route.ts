@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic"
 import { NextResponse } from "next/server"
 
 // ~50 NM radius around Brussels centre covers all approach/departure corridors
-const API_URL = "https://api.airplanes.live/v2/point/50.8503/4.3517/50"
+const API_URL = "https://api.adsb.lol/v2/point/50.8503/4.3517/50"
 
 export interface Flight {
   icao24: string
@@ -21,7 +21,10 @@ export interface Flight {
 export async function GET() {
   try {
     const res = await fetch(API_URL, {
-      headers: { Accept: "application/json" },
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "brux-dashboard/1.0",
+      },
       cache: "no-store",
     })
     if (!res.ok) {

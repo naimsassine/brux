@@ -788,6 +788,8 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
             type: "raster",
             tiles: [`${host}${frames[i].path}/256/{z}/{x}/{y}/6/1_1.png`],
             tileSize: 256,
+            minzoom: 0,
+            maxzoom: 12,
             attribution: "RainViewer",
           })
           map.addLayer(
