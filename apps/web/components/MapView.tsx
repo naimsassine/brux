@@ -22,6 +22,7 @@ interface Props {
   showRailNetwork: boolean
   showPoliticalSites: boolean
   showRainRadar: boolean
+  showFlights: boolean
   activeTab: TabType
   dateRange: DateRange
 }
@@ -105,7 +106,7 @@ function makeBelgianFlagImage(cssSize: number): ImageData {
   return ctx.getImageData(0, 0, px, px)
 }
 
-export default function MapView({ selectedCommune, onSelectCommune, typeColors, trafficColor, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, showRainRadar, activeTab, dateRange }: Props) {
+export default function MapView({ selectedCommune, onSelectCommune, typeColors, trafficColor, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, showRainRadar, showFlights, activeTab, dateRange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const metroIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -117,6 +118,7 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
   const rainRadarIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const rainAnimIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const rainFrameRef = useRef<{ count: number; current: number }>({ count: 0, current: 0 })
+  const flightIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -623,6 +625,137 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
     else map.once("load", apply)
   }, [showPoliticalSites])
 
+  // Flights overlay — airplanes.live, no API key needed
+  useEffect(() => {
+    const LAYER = "flights"
+    const SOURCE = "flights"
+
+    const removeFlight = () => {
+      if (flightIntervalRef.current) { clearInterval(flightIntervalRef.current); flightIntervalRef.current = null }
+      const map = mapRef.current
+      if (!map?.isStyleLoaded()) return
+      if (map.getLayer(LAYER)) map.removeLayer(LAYER)
+      if (map.getSource(SOURCE)) map.removeSource(SOURCE)
+      if (map.hasImage("airplane-icon")) map.removeImage("airplane-icon")
+      // remove pinned popup if it was a flight popup
+      pinnedPopupRef.current?.remove()
+      pinnedPopupRef.current = null
+    }
+
+    const flightHtml = (p: any) => {
+      const alt  = p.altitude != null ? `${Number(p.altitude).toLocaleString()} ft` : "—"
+      const spd  = p.speed    != null ? `${Math.round(p.speed)} kts` : "—"
+      const hdg  = p.heading  != null ? `${Math.round(p.heading)}°` : "—"
+      const vr   = p.verticalRate != null
+        ? (p.verticalRate > 100 ? " ▲" : p.verticalRate < -100 ? " ▼" : "")
+        : ""
+      const label = p.callsign || p.registration || p.icao24
+      return `
+        <div style="font-family:ui-monospace,monospace;padding:2px 0">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#a78bfa;margin-bottom:6px">
+            ${escapeHtml(label)}${p.type ? ` · ${escapeHtml(p.type)}` : ""}
+          </div>
+          <div style="font-size:11px;color:#c9d1d9;font-family:-apple-system,sans-serif;line-height:1.7">
+            <span style="color:#6e7f96">ALT</span> ${escapeHtml(alt)}${vr}<br/>
+            <span style="color:#6e7f96">SPD</span> ${escapeHtml(spd)}&nbsp;&nbsp;
+            <span style="color:#6e7f96">HDG</span> ${escapeHtml(hdg)}
+          </div>
+        </div>`
+    }
+
+    const fetchAndRender = async () => {
+      const map = mapRef.current
+      if (!map?.isStyleLoaded()) return
+
+      let res: Response
+      try { res = await fetch("/api/flights") } catch { return }
+      if (!res.ok) return
+      const flights: any[] = await res.json()
+
+      const features = flights.map((f) => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [f.lng, f.lat] },
+        properties: f,
+      }))
+      const geojson = { type: "FeatureCollection", features }
+
+      if (map.getSource(SOURCE)) {
+        ;(map.getSource(SOURCE) as any).setData(geojson)
+        return
+      }
+
+      if (!map.hasImage("airplane-icon")) {
+        map.addImage("airplane-icon", makeAirplaneImage(20), { pixelRatio: 2 })
+      }
+
+      map.addSource(SOURCE, { type: "geojson", data: geojson })
+      map.addLayer({
+        id: LAYER,
+        type: "symbol",
+        source: SOURCE,
+        layout: {
+          "icon-image": "airplane-icon",
+          "icon-size": 1,
+          "icon-rotate": ["coalesce", ["get", "heading"], 0],
+          "icon-rotation-alignment": "map",
+          "icon-allow-overlap": true,
+          "icon-ignore-placement": true,
+        },
+      })
+
+      let flightHoverPopup: any = null
+
+      map.on("mouseenter", LAYER, (e: any) => {
+        if (!e.features?.length || !PopupCtorRef.current) return
+        map.getCanvas().style.cursor = "pointer"
+        if (pinnedPopupRef.current) return
+        const p = e.features[0].properties
+        flightHoverPopup?.remove()
+        flightHoverPopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "220px" })
+          .setLngLat(e.lngLat)
+          .setHTML(flightHtml(p))
+          .addTo(map)
+      })
+      map.on("mouseleave", LAYER, () => {
+        map.getCanvas().style.cursor = ""
+        if (pinnedPopupRef.current) return
+        flightHoverPopup?.remove()
+        flightHoverPopup = null
+      })
+      map.on("click", LAYER, (e: any) => {
+        if (!e.features?.length || !PopupCtorRef.current) return
+        clickHandledRef.current = true
+        flightHoverPopup?.remove()
+        flightHoverPopup = null
+        pinnedPopupRef.current?.remove()
+        const p = e.features[0].properties
+        pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 14, maxWidth: "220px" })
+          .setLngLat(e.lngLat)
+          .setHTML(flightHtml(p))
+          .addTo(map)
+        pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
+      })
+    }
+
+    if (!showFlights) { removeFlight(); return }
+
+    const map = mapRef.current
+    if (!map) {
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) { clearInterval(wait); fetchAndRender() }
+      }, 200)
+      return () => clearInterval(wait)
+    }
+    if (map.isStyleLoaded()) fetchAndRender()
+    else map.once("load", fetchAndRender)
+
+    flightIntervalRef.current = setInterval(fetchAndRender, 30_000)
+
+    return () => {
+      if (flightIntervalRef.current) { clearInterval(flightIntervalRef.current); flightIntervalRef.current = null }
+    }
+  }, [showFlights])
+
   // Rain radar overlay — animated RainViewer tiles, no API key needed
   useEffect(() => {
     const clearRainLayers = (map: any) => {
@@ -811,10 +944,59 @@ const ABOVE_NETWORK_LAYERS = [
   "eu-sites-labels",
   "be-sites-icons",
   "traffic-alerts",
+  "flights",
   "items-circles",
   "metro-vehicles",
   "metro-vehicle-labels",
 ]
+
+function makeAirplaneImage(cssSize: number): ImageData {
+  const px = cssSize * 2
+  const canvas = document.createElement("canvas")
+  canvas.width = px
+  canvas.height = px
+  const ctx = canvas.getContext("2d")!
+  const cx = px / 2, cy = px / 2
+  const s = px * 0.38
+
+  ctx.fillStyle = "#e2e8f0"
+
+  // Fuselage — points UP (north), so icon-rotate maps directly to heading
+  ctx.beginPath()
+  ctx.moveTo(cx, cy - s)
+  ctx.quadraticCurveTo(cx + s * 0.18, cy - s * 0.1, cx + s * 0.14, cy + s * 0.65)
+  ctx.lineTo(cx, cy + s * 0.5)
+  ctx.lineTo(cx - s * 0.14, cy + s * 0.65)
+  ctx.quadraticCurveTo(cx - s * 0.18, cy - s * 0.1, cx, cy - s)
+  ctx.fill()
+
+  // Wings
+  ctx.beginPath()
+  ctx.moveTo(cx - s * 0.14, cy + s * 0.05)
+  ctx.lineTo(cx - s, cy + s * 0.45)
+  ctx.lineTo(cx - s * 0.7, cy + s * 0.55)
+  ctx.lineTo(cx - s * 0.14, cy + s * 0.22)
+  ctx.lineTo(cx + s * 0.14, cy + s * 0.22)
+  ctx.lineTo(cx + s * 0.7, cy + s * 0.55)
+  ctx.lineTo(cx + s, cy + s * 0.45)
+  ctx.lineTo(cx + s * 0.14, cy + s * 0.05)
+  ctx.closePath()
+  ctx.fill()
+
+  // Tail fins
+  ctx.beginPath()
+  ctx.moveTo(cx - s * 0.14, cy + s * 0.55)
+  ctx.lineTo(cx - s * 0.48, cy + s * 0.88)
+  ctx.lineTo(cx - s * 0.3, cy + s * 0.92)
+  ctx.lineTo(cx, cy + s * 0.72)
+  ctx.lineTo(cx + s * 0.3, cy + s * 0.92)
+  ctx.lineTo(cx + s * 0.48, cy + s * 0.88)
+  ctx.lineTo(cx + s * 0.14, cy + s * 0.55)
+  ctx.closePath()
+  ctx.fill()
+
+  return ctx.getImageData(0, 0, px, px)
+}
 function lowestCustomLayer(map: any): string | undefined {
   return ABOVE_NETWORK_LAYERS.find((id) => map.getLayer(id))
 }

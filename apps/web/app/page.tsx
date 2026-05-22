@@ -50,6 +50,7 @@ export default function Home() {
   const [showRailNetwork, setShowRailNetwork]   = useState(false)
   const [showPoliticalSites, setShowPoliticalSites] = useState(true)
   const [showRainRadar, setShowRainRadar]       = useState(false)
+  const [showFlights, setShowFlights]           = useState(false)
   const [webcamCam, setWebcamCam]               = useState<string | null>(null)
   const [mobileView, setMobileView]             = useState<"feed" | "map">("feed")
 
@@ -102,6 +103,8 @@ export default function Home() {
         onTogglePoliticalSites={() => setShowPoliticalSites((v) => !v)}
         showRainRadar={showRainRadar}
         onToggleRainRadar={() => setShowRainRadar((v) => !v)}
+        showFlights={showFlights}
+        onToggleFlights={() => setShowFlights((v) => !v)}
       />
 
       {webcamCam && <Webcam initialCam={webcamCam} onClose={() => setWebcamCam(null)} />}
@@ -136,6 +139,7 @@ export default function Home() {
             showRailNetwork={showRailNetwork}
             showPoliticalSites={showPoliticalSites}
             showRainRadar={showRainRadar}
+            showFlights={showFlights}
             activeTab={activeTab}
             dateRange={dateRange}
           />
