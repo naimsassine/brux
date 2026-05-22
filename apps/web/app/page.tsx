@@ -53,7 +53,7 @@ export default function Home() {
   const [mobileView, setMobileView]             = useState<"feed" | "map">("feed")
 
   return (
-    <div className="flex flex-col h-screen bg-[#080c12]">
+    <div className="flex flex-col h-[100dvh] bg-[#080c12]">
 
       {/* ── Top bar ── */}
       <header className="flex items-center gap-4 px-4 h-10 bg-[#080c12] border-b border-[#1c2a3a] z-10 flex-shrink-0">
@@ -119,7 +119,7 @@ export default function Home() {
         </div>
 
         {/* Map — full width on mobile, fills remaining space on desktop */}
-        <div className={`${mobileView === "feed" ? "hidden md:block" : "block"} flex-1 relative`}>
+        <div className={`${mobileView === "feed" ? "hidden md:flex" : "flex"} flex-1`}>
           <MapView
             selectedCommune={selectedCommune}
             onSelectCommune={(id) => {
