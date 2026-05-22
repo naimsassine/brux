@@ -50,6 +50,7 @@ export default function Home() {
   const [showRailNetwork, setShowRailNetwork]   = useState(false)
   const [showPoliticalSites, setShowPoliticalSites] = useState(true)
   const [webcamCam, setWebcamCam]               = useState<string | null>(null)
+  const [mobileView, setMobileView]             = useState<"feed" | "map">("feed")
 
   return (
     <div className="flex flex-col h-screen bg-[#080c12]">
@@ -69,10 +70,9 @@ export default function Home() {
           </div>
         </div>
 
-        <LiveClock />
+        <span className="hidden sm:block"><LiveClock /></span>
 
         <div className="ml-auto flex items-center gap-2">
-
           {selectedCommune && (
             <button
               onClick={() => setSelectedCommune(null)}
@@ -104,8 +104,11 @@ export default function Home() {
       {webcamCam && <Webcam initialCam={webcamCam} onClose={() => setWebcamCam(null)} />}
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Feed */}
-        <div className="w-[400px] flex-shrink-0 flex flex-col border-r border-[#1c2a3a] overflow-hidden">
+        {/* Feed — full width on mobile, fixed 400px on desktop */}
+        <div className={`
+          ${mobileView === "map" ? "hidden md:flex" : "flex"}
+          w-full md:w-[400px] flex-shrink-0 flex-col border-r border-[#1c2a3a] overflow-hidden
+        `}>
           <Feed
             type={activeTab}
             communeId={selectedCommune}
@@ -115,25 +118,60 @@ export default function Home() {
           />
         </div>
 
-        {/* Map */}
-        <MapView
-          selectedCommune={selectedCommune}
-          onSelectCommune={setSelectedCommune}
-          typeColors={TYPE_COLORS}
-          trafficColor={TRAFFIC_COLOR}
-          showMetro={showMetro}
-          showBusNetwork={showBusNetwork}
-          showRailNetwork={showRailNetwork}
-          showPoliticalSites={showPoliticalSites}
-          activeTab={activeTab}
-          dateRange={dateRange}
-        />
+        {/* Map — full width on mobile, fills remaining space on desktop */}
+        <div className={`${mobileView === "feed" ? "hidden md:block" : "block"} flex-1 relative`}>
+          <MapView
+            selectedCommune={selectedCommune}
+            onSelectCommune={(id) => {
+              setSelectedCommune(id)
+              setMobileView("feed")
+            }}
+            typeColors={TYPE_COLORS}
+            trafficColor={TRAFFIC_COLOR}
+            showMetro={showMetro}
+            showBusNetwork={showBusNetwork}
+            showRailNetwork={showRailNetwork}
+            showPoliticalSites={showPoliticalSites}
+            activeTab={activeTab}
+            dateRange={dateRange}
+          />
+        </div>
 
-        {/* Floating right column — webcams + weather */}
-        <div className="fixed right-4 z-20 flex flex-col gap-2" style={{ top: 88 }}>
+        {/* Floating right column — webcams + weather (desktop only) */}
+        <div className="hidden md:flex fixed right-4 z-20 flex-col gap-2" style={{ top: 88 }}>
           <PersistentWebcams onExpand={(cam) => setWebcamCam(cam)} />
           <WeatherWidget />
         </div>
+      </div>
+
+      {/* Mobile bottom tab bar */}
+      <div className="md:hidden flex flex-shrink-0 border-t border-[#1c2a3a] bg-[#080c12]">
+        <button
+          onClick={() => setMobileView("feed")}
+          className="flex-1 py-3 flex flex-col items-center gap-1 transition-colors"
+          style={{ color: mobileView === "feed" ? "#c9d1d9" : "#3d4f64" }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <rect x="0" y="0" width="7" height="4" rx="1"/>
+            <rect x="0" y="6" width="7" height="4" rx="1"/>
+            <rect x="0" y="12" width="7" height="4" rx="1"/>
+            <rect x="9" y="0" width="7" height="4" rx="1"/>
+            <rect x="9" y="6" width="7" height="4" rx="1"/>
+            <rect x="9" y="12" width="7" height="4" rx="1"/>
+          </svg>
+          <span className="font-mono text-[9px] tracking-[.15em]">FEED</span>
+        </button>
+        <button
+          onClick={() => setMobileView("map")}
+          className="flex-1 py-3 flex flex-col items-center gap-1 transition-colors"
+          style={{ color: mobileView === "map" ? "#c9d1d9" : "#3d4f64" }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M0 3.5l5-2 6 2 5-2v11l-5 2-6-2-5 2V3.5z" opacity=".4"/>
+            <path d="M5 1.5v11M11 3.5v11"/>
+          </svg>
+          <span className="font-mono text-[9px] tracking-[.15em]">MAP</span>
+        </button>
       </div>
     </div>
   )
