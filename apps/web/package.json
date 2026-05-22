@@ -9,6 +9,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",
     "@brux/db": "*",
+    "@vercel/analytics": "^2.0.1",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "hls.js": "^1.6.16",
