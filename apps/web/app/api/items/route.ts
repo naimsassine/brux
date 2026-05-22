@@ -60,5 +60,7 @@ export async function GET(req: NextRequest) {
     .limit(limit)
     .offset(offset)
 
-  return NextResponse.json(rows)
+  return NextResponse.json(rows, {
+    headers: { "Cache-Control": "s-maxage=120, stale-while-revalidate=60" },
+  })
 }

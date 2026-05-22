@@ -141,6 +141,6 @@ export async function GET() {
   }
 
   return NextResponse.json(Object.values(lines), {
-    headers: { "Cache-Control": "no-store" },
+    headers: { "Cache-Control": "s-maxage=15, stale-while-revalidate=10" },
   })
 }

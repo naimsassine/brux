@@ -366,14 +366,14 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
         if (mapRef.current?.isStyleLoaded()) {
           clearInterval(wait)
           fetchAndRenderMetro(mapRef.current)
-          metroIntervalRef.current = setInterval(() => fetchAndRenderMetro(mapRef.current), 15000)
+          metroIntervalRef.current = setInterval(() => fetchAndRenderMetro(mapRef.current), 30000)
         }
       }, 200)
       return () => clearInterval(wait)
     }
 
     run()
-    metroIntervalRef.current = setInterval(run, 15000)
+    metroIntervalRef.current = setInterval(run, 30000)
 
     return () => {
       if (metroIntervalRef.current) clearInterval(metroIntervalRef.current)

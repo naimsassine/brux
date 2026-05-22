@@ -85,5 +85,7 @@ export async function GET() {
   const tierOrder: Record<AlertTier, number> = { critical: 0, warning: 1, info: 2 }
   withTier.sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier])
 
-  return NextResponse.json(withTier)
+  return NextResponse.json(withTier, {
+    headers: { "Cache-Control": "s-maxage=120, stale-while-revalidate=60" },
+  })
 }
