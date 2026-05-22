@@ -106,7 +106,7 @@ export async function GET() {
     )
 
     return NextResponse.json(alerts, {
-      headers: { "Cache-Control": "s-maxage=90, stale-while-revalidate=30" },
+      headers: { "Cache-Control": "s-maxage=120, stale-while-revalidate=60" },
     })
   } catch (e) {
     console.error("[traffic]", e)

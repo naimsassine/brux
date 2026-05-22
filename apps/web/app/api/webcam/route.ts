@@ -36,7 +36,9 @@ export async function GET(req: NextRequest) {
         expiresAt: Date.now() + 30 * 60 * 1000,
       }
     }
-    return NextResponse.json({ streamUrl: cache[cam].proxied })
+    return NextResponse.json({ streamUrl: cache[cam].proxied }, {
+      headers: { "Cache-Control": "s-maxage=1800, stale-while-revalidate=300" },
+    })
   } catch (e) {
     console.error("[webcam]", e)
     return NextResponse.json({ error: "internal error" }, { status: 500 })

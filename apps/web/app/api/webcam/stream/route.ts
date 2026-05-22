@@ -36,7 +36,6 @@ const UPSTREAM_HEADERS = {
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Cache-Control": "no-cache, no-store",
 }
 
 // Rewrite all non-comment, non-empty lines (segment URLs) to route through our proxy.
@@ -80,16 +79,22 @@ export async function GET(req: NextRequest) {
     const text = await upstream.text()
     const rewritten = rewritePlaylist(text, targetUrl)
     return new NextResponse(rewritten, {
-      headers: { ...CORS_HEADERS, "Content-Type": "application/vnd.apple.mpegurl" },
+      headers: {
+        ...CORS_HEADERS,
+        "Content-Type": "application/vnd.apple.mpegurl",
+        // Playlist changes every few seconds; a short edge cache reduces redundant origin hits
+        "Cache-Control": "s-maxage=4, stale-while-revalidate=2",
+      },
     })
   }
 
-  // Video segment — stream the bytes through unchanged
+  // Video segments are immutable — same URL always returns the same bytes
   const buffer = await upstream.arrayBuffer()
   return new NextResponse(buffer, {
     headers: {
       ...CORS_HEADERS,
       "Content-Type": upstream.headers.get("content-type") ?? "video/MP2T",
+      "Cache-Control": "s-maxage=120, stale-while-revalidate=60",
     },
   })
 }
