@@ -17,6 +17,8 @@ interface Props {
   onToggleRailNetwork: () => void
   showPoliticalSites: boolean
   onTogglePoliticalSites: () => void
+  showRainRadar: boolean
+  onToggleRainRadar: () => void
 }
 
 const ITEM_TABS: { key: ItemType; label: string }[] = [
@@ -43,6 +45,7 @@ const LAYERS: {
   { key: "rail",     label: "TRAM",     color: "#7c3aed", show: p => p.showRailNetwork,   toggle: p => p.onToggleRailNetwork()   },
   { key: "bus",      label: "BUS",      color: "#16a34a", show: p => p.showBusNetwork,    toggle: p => p.onToggleBusNetwork()    },
   { key: "political",label: "POLITICS", color: "#b45309", show: p => p.showPoliticalSites,toggle: p => p.onTogglePoliticalSites()},
+  { key: "rain",     label: "RAIN",     color: "#38bdf8", show: p => p.showRainRadar,      toggle: p => p.onToggleRainRadar()      },
 ]
 
 function Divider() {

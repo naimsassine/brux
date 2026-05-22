@@ -21,6 +21,7 @@ interface Props {
   showBusNetwork: boolean
   showRailNetwork: boolean
   showPoliticalSites: boolean
+  showRainRadar: boolean
   activeTab: TabType
   dateRange: DateRange
 }
@@ -104,7 +105,7 @@ function makeBelgianFlagImage(cssSize: number): ImageData {
   return ctx.getImageData(0, 0, px, px)
 }
 
-export default function MapView({ selectedCommune, onSelectCommune, typeColors, trafficColor, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, activeTab, dateRange }: Props) {
+export default function MapView({ selectedCommune, onSelectCommune, typeColors, trafficColor, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, showRainRadar, activeTab, dateRange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const metroIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -113,6 +114,9 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
   const PopupCtorRef = useRef<any>(null)
   const pinnedPopupRef = useRef<any>(null)
   const clickHandledRef = useRef(false)
+  const rainRadarIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const rainAnimIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const rainFrameRef = useRef<{ count: number; current: number }>({ count: 0, current: 0 })
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -619,6 +623,90 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
     else map.once("load", apply)
   }, [showPoliticalSites])
 
+  // Rain radar overlay — animated RainViewer tiles, no API key needed
+  useEffect(() => {
+    const clearRainLayers = (map: any) => {
+      if (rainAnimIntervalRef.current) { clearInterval(rainAnimIntervalRef.current); rainAnimIntervalRef.current = null }
+      for (let i = 0; i < RAIN_FRAME_COUNT; i++) {
+        if (map?.getLayer(`rain-layer-${i}`)) map.removeLayer(`rain-layer-${i}`)
+        if (map?.getSource(`rain-frame-${i}`)) map.removeSource(`rain-frame-${i}`)
+      }
+    }
+
+    const loadRain = async () => {
+      const map = mapRef.current
+      if (!map?.isStyleLoaded()) return
+      clearRainLayers(map)
+
+      try {
+        const res = await fetch("https://api.rainviewer.com/public/weather-maps.json")
+        const data = await res.json()
+        const frames: { path: string }[] = (data.radar?.past ?? []).slice(-RAIN_FRAME_COUNT)
+        if (!frames.length) return
+
+        const host: string = data.host
+        // Insert below the first existing marker layer (above network lines)
+        const beforeId = ABOVE_NETWORK_LAYERS
+          .filter((id) => !id.startsWith("rain-"))
+          .find((id) => map.getLayer(id))
+
+        for (let i = 0; i < frames.length; i++) {
+          map.addSource(`rain-frame-${i}`, {
+            type: "raster",
+            tiles: [`${host}${frames[i].path}/256/{z}/{x}/{y}/6/1_1.png`],
+            tileSize: 256,
+            attribution: "RainViewer",
+          })
+          map.addLayer(
+            {
+              id: `rain-layer-${i}`,
+              type: "raster",
+              source: `rain-frame-${i}`,
+              paint: { "raster-opacity": i === frames.length - 1 ? 0.55 : 0 },
+            },
+            beforeId,
+          )
+        }
+
+        rainFrameRef.current = { count: frames.length, current: frames.length - 1 }
+
+        rainAnimIntervalRef.current = setInterval(() => {
+          const { count, current } = rainFrameRef.current
+          const next = (current + 1) % count
+          if (map.getLayer(`rain-layer-${current}`)) map.setPaintProperty(`rain-layer-${current}`, "raster-opacity", 0)
+          if (map.getLayer(`rain-layer-${next}`))    map.setPaintProperty(`rain-layer-${next}`,    "raster-opacity", 0.55)
+          rainFrameRef.current.current = next
+        }, 700)
+      } catch (e) {
+        console.error("[rain radar]", e)
+      }
+    }
+
+    if (!showRainRadar) {
+      if (rainRadarIntervalRef.current) { clearInterval(rainRadarIntervalRef.current); rainRadarIntervalRef.current = null }
+      const map = mapRef.current
+      if (map?.isStyleLoaded()) clearRainLayers(map)
+      return
+    }
+
+    const map = mapRef.current
+    if (!map) {
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) { clearInterval(wait); loadRain() }
+      }, 200)
+      return () => clearInterval(wait)
+    }
+    if (map.isStyleLoaded()) loadRain()
+    else map.once("load", loadRain)
+
+    rainRadarIntervalRef.current = setInterval(loadRain, 600_000)
+
+    return () => {
+      if (rainRadarIntervalRef.current) { clearInterval(rainRadarIntervalRef.current); rainRadarIntervalRef.current = null }
+      if (rainAnimIntervalRef.current)  { clearInterval(rainAnimIntervalRef.current);  rainAnimIntervalRef.current = null }
+    }
+  }, [showRainRadar])
+
   return <div ref={containerRef} className="flex-1" />
 }
 
@@ -713,7 +801,11 @@ function clearMetroLayers(map: any) {
 
 // Returns the id of the bottom-most custom layer that should sit above bus/rail lines,
 // so that network lines are always inserted below everything else we own.
+const RAIN_FRAME_COUNT = 6
 const ABOVE_NETWORK_LAYERS = [
+  // Rain radar frames sit above network lines but below all markers
+  "rain-layer-0", "rain-layer-1", "rain-layer-2",
+  "rain-layer-3", "rain-layer-4", "rain-layer-5",
   "metro-lines",
   "eu-sites-circles",
   "eu-sites-labels",
