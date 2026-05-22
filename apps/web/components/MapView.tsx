@@ -627,17 +627,17 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
 
   // Flights overlay — airplanes.live, no API key needed
   useEffect(() => {
-    const LAYER = "flights"
-    const SOURCE = "flights"
+    const SOURCE = "flights-data"
+    const CIRCLE_LAYER = "flights-circles"
+    const LABEL_LAYER = "flights-labels"
 
     const removeFlight = () => {
       if (flightIntervalRef.current) { clearInterval(flightIntervalRef.current); flightIntervalRef.current = null }
       const map = mapRef.current
       if (!map?.isStyleLoaded()) return
-      if (map.getLayer(LAYER)) map.removeLayer(LAYER)
-      if (map.getSource(SOURCE)) map.removeSource(SOURCE)
-      if (map.hasImage("airplane-icon")) map.removeImage("airplane-icon")
-      // remove pinned popup if it was a flight popup
+      if (map.getLayer(LABEL_LAYER))  map.removeLayer(LABEL_LAYER)
+      if (map.getLayer(CIRCLE_LAYER)) map.removeLayer(CIRCLE_LAYER)
+      if (map.getSource(SOURCE))      map.removeSource(SOURCE)
       pinnedPopupRef.current?.remove()
       pinnedPopupRef.current = null
     }
@@ -684,52 +684,68 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
         return
       }
 
-      if (!map.hasImage("airplane-icon")) {
-        map.addImage("airplane-icon", makeAirplaneImage(20), { pixelRatio: 2 })
-      }
-
       map.addSource(SOURCE, { type: "geojson", data: geojson })
+
       map.addLayer({
-        id: LAYER,
+        id: CIRCLE_LAYER,
+        type: "circle",
+        source: SOURCE,
+        paint: {
+          "circle-radius": 5,
+          "circle-color": "#a78bfa",
+          "circle-opacity": 0.9,
+          "circle-stroke-width": 1.5,
+          "circle-stroke-color": "#fff",
+        },
+      })
+
+      map.addLayer({
+        id: LABEL_LAYER,
         type: "symbol",
         source: SOURCE,
         layout: {
-          "icon-image": "airplane-icon",
-          "icon-size": 1,
-          "icon-rotate": ["coalesce", ["get", "heading"], 0],
-          "icon-rotation-alignment": "map",
-          "icon-allow-overlap": true,
-          "icon-ignore-placement": true,
+          "text-field": ["coalesce", ["get", "callsign"], ["get", "icao24"]],
+          "text-size": 9,
+          "text-font": ["Noto Sans Regular"],
+          "text-offset": [0, 1.2],
+          "text-anchor": "top",
+          "text-optional": true,
+          "text-allow-overlap": false,
+        },
+        paint: {
+          "text-color": "#a78bfa",
+          "text-halo-color": "#080c12",
+          "text-halo-width": 1.5,
         },
       })
 
       let flightHoverPopup: any = null
 
-      map.on("mouseenter", LAYER, (e: any) => {
+      map.on("mouseenter", CIRCLE_LAYER, (e: any) => {
         if (!e.features?.length || !PopupCtorRef.current) return
         map.getCanvas().style.cursor = "pointer"
         if (pinnedPopupRef.current) return
         const p = e.features[0].properties
         flightHoverPopup?.remove()
-        flightHoverPopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "220px" })
+        flightHoverPopup = new PopupCtorRef.current({ closeButton: false, offset: 10, maxWidth: "220px" })
           .setLngLat(e.lngLat)
           .setHTML(flightHtml(p))
           .addTo(map)
       })
-      map.on("mouseleave", LAYER, () => {
+      map.on("mouseleave", CIRCLE_LAYER, () => {
         map.getCanvas().style.cursor = ""
         if (pinnedPopupRef.current) return
         flightHoverPopup?.remove()
         flightHoverPopup = null
       })
-      map.on("click", LAYER, (e: any) => {
+      map.on("click", CIRCLE_LAYER, (e: any) => {
         if (!e.features?.length || !PopupCtorRef.current) return
         clickHandledRef.current = true
         flightHoverPopup?.remove()
         flightHoverPopup = null
         pinnedPopupRef.current?.remove()
         const p = e.features[0].properties
-        pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 14, maxWidth: "220px" })
+        pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 10, maxWidth: "220px" })
           .setLngLat(e.lngLat)
           .setHTML(flightHtml(p))
           .addTo(map)
@@ -786,8 +802,8 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
         for (let i = 0; i < frames.length; i++) {
           map.addSource(`rain-frame-${i}`, {
             type: "raster",
-            tiles: [`${host}${frames[i].path}/256/{z}/{x}/{y}/6/1_1.png`],
-            tileSize: 256,
+            tiles: [`${host}${frames[i].path}/512/{z}/{x}/{y}/6/1_1.png`],
+            tileSize: 512,
             minzoom: 0,
             maxzoom: 12,
             attribution: "RainViewer",
@@ -946,59 +962,13 @@ const ABOVE_NETWORK_LAYERS = [
   "eu-sites-labels",
   "be-sites-icons",
   "traffic-alerts",
-  "flights",
+  "flights-circles",
+  "flights-labels",
   "items-circles",
   "metro-vehicles",
   "metro-vehicle-labels",
 ]
 
-function makeAirplaneImage(cssSize: number): ImageData {
-  const px = cssSize * 2
-  const canvas = document.createElement("canvas")
-  canvas.width = px
-  canvas.height = px
-  const ctx = canvas.getContext("2d")!
-  const cx = px / 2, cy = px / 2
-  const s = px * 0.38
-
-  ctx.fillStyle = "#e2e8f0"
-
-  // Fuselage — points UP (north), so icon-rotate maps directly to heading
-  ctx.beginPath()
-  ctx.moveTo(cx, cy - s)
-  ctx.quadraticCurveTo(cx + s * 0.18, cy - s * 0.1, cx + s * 0.14, cy + s * 0.65)
-  ctx.lineTo(cx, cy + s * 0.5)
-  ctx.lineTo(cx - s * 0.14, cy + s * 0.65)
-  ctx.quadraticCurveTo(cx - s * 0.18, cy - s * 0.1, cx, cy - s)
-  ctx.fill()
-
-  // Wings
-  ctx.beginPath()
-  ctx.moveTo(cx - s * 0.14, cy + s * 0.05)
-  ctx.lineTo(cx - s, cy + s * 0.45)
-  ctx.lineTo(cx - s * 0.7, cy + s * 0.55)
-  ctx.lineTo(cx - s * 0.14, cy + s * 0.22)
-  ctx.lineTo(cx + s * 0.14, cy + s * 0.22)
-  ctx.lineTo(cx + s * 0.7, cy + s * 0.55)
-  ctx.lineTo(cx + s, cy + s * 0.45)
-  ctx.lineTo(cx + s * 0.14, cy + s * 0.05)
-  ctx.closePath()
-  ctx.fill()
-
-  // Tail fins
-  ctx.beginPath()
-  ctx.moveTo(cx - s * 0.14, cy + s * 0.55)
-  ctx.lineTo(cx - s * 0.48, cy + s * 0.88)
-  ctx.lineTo(cx - s * 0.3, cy + s * 0.92)
-  ctx.lineTo(cx, cy + s * 0.72)
-  ctx.lineTo(cx + s * 0.3, cy + s * 0.92)
-  ctx.lineTo(cx + s * 0.48, cy + s * 0.88)
-  ctx.lineTo(cx + s * 0.14, cy + s * 0.55)
-  ctx.closePath()
-  ctx.fill()
-
-  return ctx.getImageData(0, 0, px, px)
-}
 function lowestCustomLayer(map: any): string | undefined {
   return ABOVE_NETWORK_LAYERS.find((id) => map.getLayer(id))
 }
