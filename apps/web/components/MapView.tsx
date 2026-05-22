@@ -111,6 +111,8 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
   const trafficIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const itemsAbortRef = useRef<AbortController | null>(null)
   const PopupCtorRef = useRef<any>(null)
+  const pinnedPopupRef = useRef<any>(null)
+  const clickHandledRef = useRef(false)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -131,9 +133,16 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
       map.on("load", () => {
         let activePopup: any = null
 
+        map.on("click", () => {
+          if (clickHandledRef.current) { clickHandledRef.current = false; return }
+          pinnedPopupRef.current?.remove()
+          pinnedPopupRef.current = null
+        })
+
         map.on("mouseenter", "items-circles", (e: any) => {
           if (!e.features?.length) return
           map.getCanvas().style.cursor = "pointer"
+          if (pinnedPopupRef.current) return
           const props = e.features[0].properties
           activePopup?.remove()
           activePopup = new maplibre.Popup({ closeButton: false, offset: 8, maxWidth: "280px" })
@@ -144,8 +153,23 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
 
         map.on("mouseleave", "items-circles", () => {
           map.getCanvas().style.cursor = ""
+          if (pinnedPopupRef.current) return
           activePopup?.remove()
           activePopup = null
+        })
+
+        map.on("click", "items-circles", (e: any) => {
+          if (!e.features?.length) return
+          clickHandledRef.current = true
+          activePopup?.remove()
+          activePopup = null
+          pinnedPopupRef.current?.remove()
+          const props = e.features[0].properties
+          pinnedPopupRef.current = new maplibre.Popup({ closeButton: true, offset: 8, maxWidth: "280px" })
+            .setLngLat(e.lngLat)
+            .setHTML(buildPopupHtml(props, typeColors))
+            .addTo(map)
+          pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
         })
 
         // Police stations — always visible, no toggle
@@ -165,25 +189,41 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
           })
 
           let policePopup: any = null
-          map.on("mouseenter", "police-icons", (e: any) => {
-            if (!e.features?.length || !PopupCtorRef.current) return
-            map.getCanvas().style.cursor = "pointer"
-            const p = e.features[0].properties
-            policePopup?.remove()
-            policePopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "220px" })
-              .setLngLat(e.lngLat)
-              .setHTML(`
+          const policeHtml = (p: any) => `
                 <div style="font-family:ui-monospace,monospace;padding:2px 0">
                   <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#60a5fa;margin-bottom:6px">POLICE</div>
                   <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:3px;font-family:-apple-system,sans-serif">${escapeHtml(p.name)}</div>
                   <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">${escapeHtml(p.zone)}</div>
-                </div>`)
+                </div>`
+          map.on("mouseenter", "police-icons", (e: any) => {
+            if (!e.features?.length || !PopupCtorRef.current) return
+            map.getCanvas().style.cursor = "pointer"
+            if (pinnedPopupRef.current) return
+            const p = e.features[0].properties
+            policePopup?.remove()
+            policePopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "220px" })
+              .setLngLat(e.lngLat)
+              .setHTML(policeHtml(p))
               .addTo(map)
           })
           map.on("mouseleave", "police-icons", () => {
             map.getCanvas().style.cursor = ""
+            if (pinnedPopupRef.current) return
             policePopup?.remove()
             policePopup = null
+          })
+          map.on("click", "police-icons", (e: any) => {
+            if (!e.features?.length || !PopupCtorRef.current) return
+            clickHandledRef.current = true
+            policePopup?.remove()
+            policePopup = null
+            pinnedPopupRef.current?.remove()
+            const p = e.features[0].properties
+            pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 14, maxWidth: "220px" })
+              .setLngLat(e.lngLat)
+              .setHTML(policeHtml(p))
+              .addTo(map)
+            pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
           })
         }).catch((e: any) => console.error("[police] image load error", e))
 
@@ -202,31 +242,50 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
         })
 
         let hospitalPopup: any = null
-        map.on("mouseenter", "hospital-icons", (e: any) => {
-          if (!e.features?.length || !PopupCtorRef.current) return
-          map.getCanvas().style.cursor = "pointer"
-          const p = e.features[0].properties
-          hospitalPopup?.remove()
-          hospitalPopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "220px" })
-            .setLngLat(e.lngLat)
-            .setHTML(`
+        const hospitalHtml = (p: any) => `
               <div style="font-family:ui-monospace,monospace;padding:2px 0">
                 <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#f87171;margin-bottom:6px">HOSPITAL</div>
                 <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:3px;font-family:-apple-system,sans-serif">${escapeHtml(p.name)}</div>
                 <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">${escapeHtml(p.address)}</div>
-              </div>`)
+              </div>`
+        map.on("mouseenter", "hospital-icons", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          map.getCanvas().style.cursor = "pointer"
+          if (pinnedPopupRef.current) return
+          const p = e.features[0].properties
+          hospitalPopup?.remove()
+          hospitalPopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "220px" })
+            .setLngLat(e.lngLat)
+            .setHTML(hospitalHtml(p))
             .addTo(map)
         })
         map.on("mouseleave", "hospital-icons", () => {
           map.getCanvas().style.cursor = ""
+          if (pinnedPopupRef.current) return
           hospitalPopup?.remove()
           hospitalPopup = null
+        })
+        map.on("click", "hospital-icons", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          clickHandledRef.current = true
+          hospitalPopup?.remove()
+          hospitalPopup = null
+          pinnedPopupRef.current?.remove()
+          const p = e.features[0].properties
+          pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 14, maxWidth: "220px" })
+            .setLngLat(e.lngLat)
+            .setHTML(hospitalHtml(p))
+            .addTo(map)
+          pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
         })
       })
 
       map.on("click", "commune-fill", (e: any) => {
         const communeId = e.features?.[0]?.properties?.id
-        if (communeId) onSelectCommune(Number(communeId))
+        if (communeId) {
+          clickHandledRef.current = true
+          onSelectCommune(Number(communeId))
+        }
       })
     })
 
@@ -262,7 +321,7 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
   useEffect(() => {
     const runTraffic = () => {
       const map = mapRef.current
-      if (map?.isStyleLoaded()) fetchAndRenderTraffic(map, trafficColor, PopupCtorRef)
+      if (map?.isStyleLoaded()) fetchAndRenderTraffic(map, trafficColor, PopupCtorRef, pinnedPopupRef, clickHandledRef)
     }
 
     if (!mapRef.current) {
@@ -435,25 +494,41 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
         })
 
         let euPopup: any = null
-        map.on("mouseenter", "eu-sites-circles", (e: any) => {
-          if (!e.features?.length || !PopupCtorRef.current) return
-          map.getCanvas().style.cursor = "pointer"
-          const p = e.features[0].properties
-          euPopup?.remove()
-          euPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "240px" })
-            .setLngLat(e.lngLat)
-            .setHTML(`
+        const euHtml = (p: any) => `
               <div style="font-family:ui-monospace,monospace;padding:2px 0">
                 <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#60a5fa;margin-bottom:6px">EU INSTITUTION</div>
                 <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(p.name)}</div>
                 <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">${escapeHtml(p.description)}</div>
-              </div>`)
+              </div>`
+        map.on("mouseenter", "eu-sites-circles", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          map.getCanvas().style.cursor = "pointer"
+          if (pinnedPopupRef.current) return
+          const p = e.features[0].properties
+          euPopup?.remove()
+          euPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "240px" })
+            .setLngLat(e.lngLat)
+            .setHTML(euHtml(p))
             .addTo(map)
         })
         map.on("mouseleave", "eu-sites-circles", () => {
           map.getCanvas().style.cursor = ""
+          if (pinnedPopupRef.current) return
           euPopup?.remove()
           euPopup = null
+        })
+        map.on("click", "eu-sites-circles", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          clickHandledRef.current = true
+          euPopup?.remove()
+          euPopup = null
+          pinnedPopupRef.current?.remove()
+          const p = e.features[0].properties
+          pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 12, maxWidth: "240px" })
+            .setLngLat(e.lngLat)
+            .setHTML(euHtml(p))
+            .addTo(map)
+          pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
         })
       }
       if (!map.getLayer("eu-sites-labels")) {
@@ -494,25 +569,41 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
         })
 
         let bePopup: any = null
-        map.on("mouseenter", "be-sites-icons", (e: any) => {
-          if (!e.features?.length || !PopupCtorRef.current) return
-          map.getCanvas().style.cursor = "pointer"
-          const p = e.features[0].properties
-          bePopup?.remove()
-          bePopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "240px" })
-            .setLngLat(e.lngLat)
-            .setHTML(`
+        const beHtml = (p: any) => `
               <div style="font-family:ui-monospace,monospace;padding:2px 0">
                 <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#f87171;margin-bottom:6px">BELGIAN POLITICS</div>
                 <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(p.name)}</div>
                 <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">${escapeHtml(p.description)}</div>
-              </div>`)
+              </div>`
+        map.on("mouseenter", "be-sites-icons", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          map.getCanvas().style.cursor = "pointer"
+          if (pinnedPopupRef.current) return
+          const p = e.features[0].properties
+          bePopup?.remove()
+          bePopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "240px" })
+            .setLngLat(e.lngLat)
+            .setHTML(beHtml(p))
             .addTo(map)
         })
         map.on("mouseleave", "be-sites-icons", () => {
           map.getCanvas().style.cursor = ""
+          if (pinnedPopupRef.current) return
           bePopup?.remove()
           bePopup = null
+        })
+        map.on("click", "be-sites-icons", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          clickHandledRef.current = true
+          bePopup?.remove()
+          bePopup = null
+          pinnedPopupRef.current?.remove()
+          const p = e.features[0].properties
+          pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 14, maxWidth: "240px" })
+            .setLngLat(e.lngLat)
+            .setHTML(beHtml(p))
+            .addTo(map)
+          pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
         })
       }
     }
@@ -730,6 +821,8 @@ async function fetchAndRenderTraffic(
   map: any,
   trafficColor: string,
   PopupCtorRef: React.MutableRefObject<any>,
+  pinnedPopupRef: React.MutableRefObject<any>,
+  clickHandledRef: React.MutableRefObject<boolean>,
 ) {
   try {
     const res = await fetch("/api/traffic")
@@ -778,26 +871,42 @@ async function fetchAndRenderTraffic(
     })
 
     let trafficPopup: any = null
-    map.on("mouseenter", "traffic-alerts", (e: any) => {
-      if (!e.features?.length || !PopupCtorRef.current) return
-      map.getCanvas().style.cursor = "pointer"
-      const p = e.features[0].properties
-      trafficPopup?.remove()
-      trafficPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "280px" })
-        .setLngLat(e.lngLat)
-        .setHTML(`
+    const trafficHtml = (p: any) => `
           <div style="font-family:ui-monospace,monospace;padding:2px 0">
             <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:${trafficColor};margin-bottom:6px">
               TRAFFIC · ${escapeHtml((p.location ?? "Brussels").toUpperCase())}
             </div>
             <div style="font-size:12px;color:#c9d1d9;line-height:1.5;font-family:-apple-system,sans-serif">${escapeHtml(p.content)}</div>
-          </div>`)
+          </div>`
+    map.on("mouseenter", "traffic-alerts", (e: any) => {
+      if (!e.features?.length || !PopupCtorRef.current) return
+      map.getCanvas().style.cursor = "pointer"
+      if (pinnedPopupRef.current) return
+      const p = e.features[0].properties
+      trafficPopup?.remove()
+      trafficPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "280px" })
+        .setLngLat(e.lngLat)
+        .setHTML(trafficHtml(p))
         .addTo(map)
     })
     map.on("mouseleave", "traffic-alerts", () => {
       map.getCanvas().style.cursor = ""
+      if (pinnedPopupRef.current) return
       trafficPopup?.remove()
       trafficPopup = null
+    })
+    map.on("click", "traffic-alerts", (e: any) => {
+      if (!e.features?.length || !PopupCtorRef.current) return
+      clickHandledRef.current = true
+      trafficPopup?.remove()
+      trafficPopup = null
+      pinnedPopupRef.current?.remove()
+      const p = e.features[0].properties
+      pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 12, maxWidth: "280px" })
+        .setLngLat(e.lngLat)
+        .setHTML(trafficHtml(p))
+        .addTo(map)
+      pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
     })
   } catch (e) {
     console.error("[traffic map]", e)
