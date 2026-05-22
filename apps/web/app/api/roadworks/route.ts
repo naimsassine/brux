@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { NextResponse } from "next/server"
 
 const PAGE_URL = "https://be.brussels/fr/info-trafic"

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { NextResponse } from "next/server"
 
 const METRO_LINES = ["1", "2", "5", "6"]

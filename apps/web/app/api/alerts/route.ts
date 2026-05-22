@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { NextResponse } from "next/server"
 import { db, items } from "@brux/db"
 import { and, desc, eq, gte, ilike, or } from "drizzle-orm"
