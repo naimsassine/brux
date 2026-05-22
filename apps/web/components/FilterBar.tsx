@@ -37,7 +37,7 @@ const DATE_OPTS: { key: DateRange; label: string }[] = [
 ]
 
 const LAYERS: {
-  key: "metro" | "rail" | "bus" | "political"
+  key: "metro" | "rail" | "bus" | "political" | "rain" | "flights"
   label: string
   color: string
   show: (p: Props) => boolean
