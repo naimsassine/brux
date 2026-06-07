@@ -8,6 +8,7 @@ import "dotenv/config"
 import { db, items } from "@brux/db"
 import { translateToEnglish } from "./translate"
 import { extractAndGeocodeLocation } from "./geocode"
+import { fetchWithRetry } from "./fetch-retry"
 
 const BASE_URL = "https://www.rtbf.be"
 const ARCHIVE_URL = `${BASE_URL}/archive/bruxelles`
@@ -81,7 +82,7 @@ function scrapeArchivePage(html: string): ScrapedArticle[] {
 async function main() {
   console.log("Fetching rtbf.be/archive/bruxelles...")
 
-  const res = await fetch(ARCHIVE_URL, {
+  const res = await fetchWithRetry(ARCHIVE_URL, {
     headers: {
       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
       "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",

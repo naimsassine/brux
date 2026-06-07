@@ -17,6 +17,8 @@ interface Props {
   onToggleRailNetwork: () => void
   showPoliticalSites: boolean
   onTogglePoliticalSites: () => void
+  showFlights: boolean
+  onToggleFlights: () => void
 }
 
 const ITEM_TABS: { key: ItemType; label: string }[] = [
@@ -33,7 +35,7 @@ const DATE_OPTS: { key: DateRange; label: string }[] = [
 ]
 
 const LAYERS: {
-  key: "metro" | "rail" | "bus" | "political"
+  key: "metro" | "rail" | "bus" | "political" | "flights"
   label: string
   color: string
   show: (p: Props) => boolean
@@ -43,6 +45,7 @@ const LAYERS: {
   { key: "rail",     label: "TRAM",     color: "#7c3aed", show: p => p.showRailNetwork,   toggle: p => p.onToggleRailNetwork()   },
   { key: "bus",      label: "BUS",      color: "#16a34a", show: p => p.showBusNetwork,    toggle: p => p.onToggleBusNetwork()    },
   { key: "political",label: "POLITICS", color: "#b45309", show: p => p.showPoliticalSites,toggle: p => p.onTogglePoliticalSites()},
+  { key: "flights",  label: "FLIGHTS",  color: "#38bdf8", show: p => p.showFlights,       toggle: p => p.onToggleFlights()       },
 ]
 
 function Divider() {

@@ -8,6 +8,7 @@ import "dotenv/config"
 import { db, items } from "@brux/db"
 import { eq, lt, and } from "drizzle-orm"
 import { translateToEnglish } from "./translate"
+import { fetchWithRetry } from "./fetch-retry"
 
 const BASE_URL =
   "https://www.visit.brussels/content/visitbrussels/en/visitors/agenda/all-events-wizard/jcr:content/root/container/agendafinder.feed.json"
@@ -54,7 +55,7 @@ interface VbResponse {
 
 async function fetchPage(page: number): Promise<VbResponse> {
   const url = `${BASE_URL}?lang=en&page=${page}&size=${PAGE_SIZE}`
-  const res = await fetch(url, {
+  const res = await fetchWithRetry(url, {
     headers: { "User-Agent": "Brux-Dashboard/1.0 (civic data aggregator)" },
   })
   if (!res.ok) throw new Error(`HTTP ${res.status} from visit.brussels API`)

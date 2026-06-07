@@ -8,6 +8,7 @@ import "dotenv/config"
 import { db, items } from "@brux/db"
 import { translateToEnglish } from "./translate"
 import { extractAndGeocodeLocation } from "./geocode"
+import { fetchWithRetry } from "./fetch-retry"
 
 const BASE_URL = "https://www.bruxellestoday.be"
 
@@ -99,7 +100,7 @@ function scrapeHomepage(html: string): ScrapedArticle[] {
 async function main() {
   console.log("Fetching bruxellestoday.be homepage...")
 
-  const res = await fetch(BASE_URL, {
+  const res = await fetchWithRetry(BASE_URL, {
     headers: {
       "User-Agent": "Brux-Dashboard/1.0 (civic data aggregator)",
       "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",

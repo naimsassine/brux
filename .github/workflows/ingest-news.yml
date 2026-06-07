@@ -21,18 +21,21 @@ jobs:
       - run: npm ci
 
       - name: RSS (Bruzz)
+        continue-on-error: true
         run: npm run ingest:news
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: BruxellesToday
+        continue-on-error: true
         run: npm run ingest:news:bruxellestoday
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: RTBF
+        continue-on-error: true
         run: npm run ingest:news:rtbf
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

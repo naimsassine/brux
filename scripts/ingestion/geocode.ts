@@ -1,4 +1,5 @@
 import OpenAI from "openai"
+import { fetchWithRetry } from "./fetch-retry"
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
@@ -25,7 +26,9 @@ If the article has no specific location within Brussels, return the word: none`,
 async function nominatimGeocode(location: string): Promise<{ lat: number; lng: number } | null> {
   const query = encodeURIComponent(`${location}, Brussels, Belgium`)
   const url = `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1&countrycodes=be`
-  const res = await fetch(url, {
+  // Nominatim enforces 1 req/s — wait 1s before each call to stay compliant
+  await new Promise((r) => setTimeout(r, 1000))
+  const res = await fetchWithRetry(url, {
     headers: { "User-Agent": "Brux-Dashboard/1.0 (civic data aggregator)" },
   })
   if (!res.ok) return null
