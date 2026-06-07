@@ -7,6 +7,7 @@ import "dotenv/config"
 import { db, items } from "@brux/db"
 import { translateToEnglish } from "./translate"
 import { extractAndGeocodeLocation } from "./geocode"
+import { fetchWithRetry } from "./fetch-retry"
 
 interface RssSource {
   name: string
@@ -110,7 +111,7 @@ function stripHtml(html: string): string {
 async function ingestSource(source: RssSource): Promise<number> {
   console.log(`\nFetching ${source.name}...`)
 
-  const res = await fetch(source.url, {
+  const res = await fetchWithRetry(source.url, {
     headers: { "User-Agent": "Brux-Dashboard/1.0 (civic data aggregator)" },
   })
   if (!res.ok) throw new Error(`HTTP ${res.status} from ${source.url}`)

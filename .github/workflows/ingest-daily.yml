@@ -21,12 +21,14 @@ jobs:
       - run: npm ci
 
       - name: Events (visit.brussels)
+        continue-on-error: true
         run: npm run ingest:events
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Roadworks (be.brussels)
+        continue-on-error: true
         run: npm run ingest:roadworks
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

@@ -12,6 +12,7 @@
 import "dotenv/config"
 import { db, items } from "@brux/db"
 import { eq, notInArray, and } from "drizzle-orm"
+import { fetchWithRetry } from "./fetch-retry"
 
 const PAGE_URL = "https://be.brussels/fr/info-trafic"
 
@@ -127,7 +128,7 @@ function detectCommune(municipalities: string[]): number | null {
 
 async function main() {
   console.log("Fetching be.brussels roadworks page…")
-  const res = await fetch(PAGE_URL, { headers: FETCH_HEADERS })
+  const res = await fetchWithRetry(PAGE_URL, { headers: FETCH_HEADERS })
   if (!res.ok) throw new Error(`HTTP ${res.status} from be.brussels`)
 
   const html = await res.text()

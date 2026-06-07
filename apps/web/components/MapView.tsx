@@ -21,6 +21,7 @@ interface Props {
   showBusNetwork: boolean
   showRailNetwork: boolean
   showPoliticalSites: boolean
+  showFlights: boolean
   activeTab: TabType
   dateRange: DateRange
 }
@@ -73,6 +74,51 @@ function makeHospitalImage(cssSize: number): ImageData {
   return ctx.getImageData(0, 0, px, px)
 }
 
+// Top-down aircraft silhouette pointing north (up). Rotated at render time via icon-rotate.
+function makePlaneImage(cssSize: number): ImageData {
+  const px = cssSize * 2
+  const canvas = document.createElement("canvas")
+  canvas.width = px
+  canvas.height = px
+  const ctx = canvas.getContext("2d")!
+  const cx = px / 2
+  const cy = px / 2
+
+  ctx.fillStyle = "#38bdf8"
+
+  // Fuselage (nose at top)
+  ctx.beginPath()
+  ctx.moveTo(cx, cy - px * 0.44)
+  ctx.lineTo(cx + px * 0.07, cy + px * 0.28)
+  ctx.lineTo(cx - px * 0.07, cy + px * 0.28)
+  ctx.closePath()
+  ctx.fill()
+
+  // Wings (centered, swept back slightly)
+  ctx.beginPath()
+  ctx.moveTo(cx - px * 0.44, cy + px * 0.1)
+  ctx.lineTo(cx - px * 0.07, cy - px * 0.08)
+  ctx.lineTo(cx + px * 0.07, cy - px * 0.08)
+  ctx.lineTo(cx + px * 0.44, cy + px * 0.1)
+  ctx.lineTo(cx + px * 0.13, cy + px * 0.2)
+  ctx.lineTo(cx - px * 0.13, cy + px * 0.2)
+  ctx.closePath()
+  ctx.fill()
+
+  // Tail fins
+  ctx.beginPath()
+  ctx.moveTo(cx - px * 0.2, cy + px * 0.44)
+  ctx.lineTo(cx - px * 0.05, cy + px * 0.26)
+  ctx.lineTo(cx + px * 0.05, cy + px * 0.26)
+  ctx.lineTo(cx + px * 0.2, cy + px * 0.44)
+  ctx.lineTo(cx + px * 0.05, cy + px * 0.44)
+  ctx.lineTo(cx - px * 0.05, cy + px * 0.44)
+  ctx.closePath()
+  ctx.fill()
+
+  return ctx.getImageData(0, 0, px, px)
+}
+
 // Renders at 2× resolution so it appears crisp when addImage is called with { pixelRatio: 2 }
 function makeBelgianFlagImage(cssSize: number): ImageData {
   const px = cssSize * 2
@@ -104,10 +150,11 @@ function makeBelgianFlagImage(cssSize: number): ImageData {
   return ctx.getImageData(0, 0, px, px)
 }
 
-export default function MapView({ selectedCommune, onSelectCommune, typeColors, trafficColor, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, activeTab, dateRange }: Props) {
+export default function MapView({ selectedCommune, onSelectCommune, typeColors, trafficColor, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, showFlights, activeTab, dateRange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const metroIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const flightsIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const trafficIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const itemsAbortRef = useRef<AbortController | null>(null)
   const PopupCtorRef = useRef<any>(null)
@@ -320,6 +367,41 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
       if (metroIntervalRef.current) clearInterval(metroIntervalRef.current)
     }
   }, [showMetro])
+
+  // Flights layer: poll every 15 seconds
+  useEffect(() => {
+    if (flightsIntervalRef.current) {
+      clearInterval(flightsIntervalRef.current)
+      flightsIntervalRef.current = null
+    }
+
+    if (!showFlights) {
+      if (mapRef.current?.isStyleLoaded()) clearFlightLayers(mapRef.current)
+      return
+    }
+
+    const run = () => {
+      if (mapRef.current?.isStyleLoaded()) fetchAndRenderFlights(mapRef.current, PopupCtorRef)
+    }
+
+    if (!mapRef.current) {
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) {
+          clearInterval(wait)
+          fetchAndRenderFlights(mapRef.current, PopupCtorRef)
+          flightsIntervalRef.current = setInterval(() => fetchAndRenderFlights(mapRef.current, PopupCtorRef), 15000)
+        }
+      }, 200)
+      return () => clearInterval(wait)
+    }
+
+    run()
+    flightsIntervalRef.current = setInterval(run, 15000)
+
+    return () => {
+      if (flightsIntervalRef.current) clearInterval(flightsIntervalRef.current)
+    }
+  }, [showFlights])
 
   // Rail (tram + metro) network layer
   useEffect(() => {
@@ -631,6 +713,8 @@ const ABOVE_NETWORK_LAYERS = [
   "items-circles",
   "metro-vehicles",
   "metro-vehicle-labels",
+  "flights",
+  "flight-labels",
 ]
 function lowestCustomLayer(map: any): string | undefined {
   return ABOVE_NETWORK_LAYERS.find((id) => map.getLayer(id))
@@ -724,6 +808,116 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
   map.addSource("metro-lines", { type: "geojson", data: linesGeojson })
   map.addSource("metro-vehicles", { type: "geojson", data: vehiclesGeojson })
   addMetroLayersToMap(map)
+}
+
+function clearFlightLayers(map: any) {
+  for (const id of ["flights", "flight-labels"]) {
+    if (map.getLayer(id)) map.removeLayer(id)
+  }
+  if (map.getSource("flights")) map.removeSource("flights")
+}
+
+async function fetchAndRenderFlights(
+  map: any,
+  PopupCtorRef: React.MutableRefObject<any>,
+) {
+  try {
+    const res = await fetch("/api/flights")
+    if (!res.ok) return
+    const flights: any[] = await res.json()
+
+    const features = flights.map((f) => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [f.lng, f.lat] },
+      properties: {
+        icao24: f.icao24,
+        callsign: f.callsign,
+        originCountry: f.originCountry,
+        altitudeM: f.altitudeM,
+        velocityMs: f.velocityMs,
+        heading: f.heading,
+        verticalRateMs: f.verticalRateMs,
+      },
+    }))
+
+    const geojson = { type: "FeatureCollection", features }
+
+    if (map.getSource("flights")) {
+      map.getSource("flights").setData(geojson)
+      return
+    }
+
+    if (!map.hasImage("plane-icon")) {
+      map.addImage("plane-icon", makePlaneImage(18), { pixelRatio: 2 })
+    }
+
+    map.addSource("flights", { type: "geojson", data: geojson })
+    map.addLayer({
+      id: "flights",
+      type: "symbol",
+      source: "flights",
+      layout: {
+        "icon-image": "plane-icon",
+        "icon-size": 1,
+        "icon-rotate": ["get", "heading"] as any,
+        "icon-rotation-alignment": "map" as const,
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+      },
+    })
+    map.addLayer({
+      id: "flight-labels",
+      type: "symbol",
+      source: "flights",
+      layout: {
+        "text-field": ["get", "callsign"] as any,
+        "text-size": 8,
+        "text-font": ["Noto Sans Regular"],
+        "text-anchor": "top" as const,
+        "text-offset": [0, 1],
+        "text-optional": true,
+        "text-allow-overlap": false,
+      },
+      paint: {
+        "text-color": "#38bdf8",
+        "text-halo-color": "#080c12",
+        "text-halo-width": 1,
+      },
+    })
+
+    let flightPopup: any = null
+    map.on("mouseenter", "flights", (e: any) => {
+      if (!e.features?.length || !PopupCtorRef.current) return
+      map.getCanvas().style.cursor = "pointer"
+      const p = e.features[0].properties
+      const altFt = Math.round((p.altitudeM ?? 0) * 3.28084).toLocaleString()
+      const kts = Math.round((p.velocityMs ?? 0) * 1.94384)
+      const vr = p.verticalRateMs != null
+        ? `${p.verticalRateMs >= 0 ? "↑" : "↓"} ${Math.abs(Math.round(p.verticalRateMs * 196.85))} fpm`
+        : null
+      flightPopup?.remove()
+      flightPopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "240px" })
+        .setLngLat(e.lngLat)
+        .setHTML(`
+          <div style="font-family:ui-monospace,monospace;padding:2px 0">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#38bdf8;margin-bottom:6px">
+              FLIGHT · ${escapeHtml(p.callsign || p.icao24)}
+            </div>
+            <div style="font-size:11px;color:#c9d1d9;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(p.originCountry)}</div>
+            <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">
+              ${altFt} ft · ${kts} kts${vr ? ` · ${vr}` : ""}
+            </div>
+          </div>`)
+        .addTo(map)
+    })
+    map.on("mouseleave", "flights", () => {
+      map.getCanvas().style.cursor = ""
+      flightPopup?.remove()
+      flightPopup = null
+    })
+  } catch (e) {
+    console.error("[flights]", e)
+  }
 }
 
 async function fetchAndRenderTraffic(
