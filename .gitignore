@@ -10,3 +10,6 @@ dist
 .DS_Store
 .gstack/
 .vercel
+
+# leaked OpenSky creds — never commit; use OPENSKY_* env vars instead
+credentials_opensky.json
