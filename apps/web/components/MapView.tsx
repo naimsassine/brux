@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react"
 import type { ItemType, TabType, DateRange } from "../lib/filters"
 import { getDateBounds } from "../lib/filters"
+import { bruxBlueprintStyle } from "../lib/mapStyle"
 import type { TrafficAlert } from "../app/api/traffic/route"
 
 interface MetroLine {
@@ -170,7 +171,7 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
       PopupCtorRef.current = maplibre.Popup
       map = new maplibre.Map({
         container: containerRef.current!,
-        style: "https://tiles.openfreemap.org/styles/liberty",
+        style: bruxBlueprintStyle,
         center: [4.3517, 50.8503],
         zoom: 12.5,
       })
@@ -337,6 +338,7 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
     })
 
     return () => {
+      stopMetroAnimation()
       map?.remove()
       mapRef.current = null
     }
@@ -783,7 +785,11 @@ async function fetchAndRenderMetro(map: any) {
 }
 
 function clearMetroLayers(map: any) {
-  const layerIds = ["metro-lines", "metro-vehicles", "metro-vehicle-labels"]
+  stopMetroAnimation()
+  const layerIds = [
+    "metro-lines-glow", "metro-lines", "metro-lines-flow",
+    "metro-vehicles-pulse", "metro-vehicles", "metro-vehicle-labels",
+  ]
   for (const id of layerIds) {
     if (map.getLayer(id)) map.removeLayer(id)
   }
@@ -796,12 +802,15 @@ function clearMetroLayers(map: any) {
 // Returns the id of the bottom-most custom layer that should sit above bus/rail lines,
 // so that network lines are always inserted below everything else we own.
 const ABOVE_NETWORK_LAYERS = [
+  "metro-lines-glow",
   "metro-lines",
+  "metro-lines-flow",
   "eu-sites-circles",
   "eu-sites-labels",
   "be-sites-icons",
   "traffic-alerts",
   "items-circles",
+  "metro-vehicles-pulse",
   "metro-vehicles",
   "metro-vehicle-labels",
   "flights",
@@ -811,24 +820,116 @@ function lowestCustomLayer(map: any): string | undefined {
   return ABOVE_NETWORK_LAYERS.find((id) => map.getLayer(id))
 }
 
+// ── Metro animation (flowing dashes along the lines + pulsing train dots) ──
+// Single requestAnimationFrame loop; id kept at module scope since there's one map.
+let metroAnimId: number | null = null
+
+// Classic "marching dashes" sequence — stepping through these offsets makes the
+// dashed overlay appear to flow along the track.
+const METRO_DASH_SEQ: number[][] = [
+  [0, 4, 3], [0.5, 4, 2.5], [1, 4, 2], [1.5, 4, 1.5], [2, 4, 1], [2.5, 4, 0.5],
+  [3, 4, 0], [0, 0.5, 4, 2.5], [0, 1, 4, 2], [0, 1.5, 4, 1.5], [0, 2, 4, 1], [0, 2.5, 4, 0.5],
+]
+
+function startMetroAnimation(map: any) {
+  if (metroAnimId != null) return // already running
+  let step = -1
+  const loop = (ts: number) => {
+    // Stop the loop if the metro layers are gone (toggled off / map removed)
+    if (!map.getLayer || !map.getLayer("metro-lines-flow")) { metroAnimId = null; return }
+
+    // Flowing dashes
+    const newStep = Math.floor((ts / 90) % METRO_DASH_SEQ.length)
+    if (newStep !== step) {
+      map.setPaintProperty("metro-lines-flow", "line-dasharray", METRO_DASH_SEQ[newStep])
+      step = newStep
+    }
+
+    // Pulsing "sonar" ring around each train (expands + fades on a 1.6s cycle)
+    if (map.getLayer("metro-vehicles-pulse")) {
+      const p = (ts % 1600) / 1600
+      map.setPaintProperty("metro-vehicles-pulse", "circle-radius", 7 + p * 16)
+      map.setPaintProperty("metro-vehicles-pulse", "circle-stroke-opacity", 0.55 * (1 - p))
+    }
+
+    metroAnimId = requestAnimationFrame(loop)
+  }
+  metroAnimId = requestAnimationFrame(loop)
+}
+
+function stopMetroAnimation() {
+  if (metroAnimId != null) { cancelAnimationFrame(metroAnimId); metroAnimId = null }
+}
+
 function addMetroLayersToMap(map: any) {
+  // Line layers sit below the item markers; the vehicle dots sit on top.
+  const lineBeforeId = map.getLayer("metro-vehicles-pulse") ? "metro-vehicles-pulse"
+    : map.getLayer("items-circles") ? "items-circles"
+    : undefined
+  const roundLine = { "line-join": "round" as const, "line-cap": "round" as const }
+
+  // Blurred glow underlay — gives the line a soft neon halo
+  if (!map.getLayer("metro-lines-glow")) {
+    map.addLayer({
+      id: "metro-lines-glow",
+      type: "line" as const,
+      source: "metro-lines",
+      layout: roundLine,
+      paint: {
+        "line-color": ["get", "color"] as any,
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 4, 13, 10, 16, 18] as any,
+        "line-opacity": 0.22,
+        "line-blur": ["interpolate", ["linear"], ["zoom"], 10, 2, 16, 6] as any,
+      },
+    }, lineBeforeId)
+  }
+
+  // Crisp coloured core
   if (!map.getLayer("metro-lines")) {
-    const linesLayer = {
+    map.addLayer({
       id: "metro-lines",
       type: "line" as const,
       source: "metro-lines",
-      layout: { "line-join": "round" as const, "line-cap": "round" as const },
+      layout: roundLine,
       paint: {
         "line-color": ["get", "color"] as any,
-        "line-width": 4,
-        "line-opacity": 0.85,
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 13, 5, 16, 9] as any,
+        "line-opacity": 0.95,
       },
-    }
-    // Always insert below vehicles — even if vehicles already exist (e.g. after a re-add)
-    const beforeId = map.getLayer("metro-vehicles") ? "metro-vehicles"
-      : map.getLayer("items-circles") ? "items-circles"
-      : undefined
-    map.addLayer(linesLayer, beforeId)
+    }, lineBeforeId)
+  }
+
+  // Animated white dashes flowing along the core (dasharray driven by the RAF loop)
+  if (!map.getLayer("metro-lines-flow")) {
+    map.addLayer({
+      id: "metro-lines-flow",
+      type: "line" as const,
+      source: "metro-lines",
+      layout: roundLine,
+      paint: {
+        "line-color": "#ffffff",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1.6, 13, 3, 16, 5] as any,
+        "line-opacity": 0.5,
+        "line-dasharray": [0, 4, 3] as any,
+      },
+    }, lineBeforeId)
+  }
+
+  // Expanding "sonar" pulse ring behind each train
+  if (!map.getLayer("metro-vehicles-pulse")) {
+    map.addLayer({
+      id: "metro-vehicles-pulse",
+      type: "circle",
+      source: "metro-vehicles",
+      paint: {
+        "circle-radius": 8,
+        "circle-color": ["get", "color"],
+        "circle-opacity": 0,
+        "circle-stroke-color": ["get", "color"],
+        "circle-stroke-width": 2,
+        "circle-stroke-opacity": 0.5,
+      },
+    })
   }
 
   if (!map.getLayer("metro-vehicles")) {
@@ -837,7 +938,7 @@ function addMetroLayersToMap(map: any) {
       type: "circle",
       source: "metro-vehicles",
       paint: {
-        "circle-radius": 10,
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 5, 14, 7, 16, 9] as any,
         "circle-color": ["get", "color"],
         "circle-stroke-width": 2,
         "circle-stroke-color": "#fff",
@@ -893,12 +994,14 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
     map.getSource("metro-lines").setData(linesGeojson)
     map.getSource("metro-vehicles")?.setData(vehiclesGeojson)
     addMetroLayersToMap(map)
+    startMetroAnimation(map)
     return
   }
 
   map.addSource("metro-lines", { type: "geojson", data: linesGeojson })
   map.addSource("metro-vehicles", { type: "geojson", data: vehiclesGeojson })
   addMetroLayersToMap(map)
+  startMetroAnimation(map)
 }
 
 function clearFlightLayers(map: any) {
