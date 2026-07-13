@@ -17,8 +17,12 @@ interface Props {
   onToggleRailNetwork: () => void
   showPoliticalSites: boolean
   onTogglePoliticalSites: () => void
-  showFlights: boolean
-  onToggleFlights: () => void
+  showBikeFlow: boolean
+  onToggleBikeFlow: () => void
+  showVillo: boolean
+  onToggleVillo: () => void
+  showAir: boolean
+  onToggleAir: () => void
 }
 
 const ITEM_TABS: { key: ItemType; label: string }[] = [
@@ -35,7 +39,7 @@ const DATE_OPTS: { key: DateRange; label: string }[] = [
 ]
 
 const LAYERS: {
-  key: "metro" | "rail" | "bus" | "political" | "flights"
+  key: "metro" | "rail" | "bus" | "political" | "bikeflow" | "villo" | "air"
   label: string
   color: string
   show: (p: Props) => boolean
@@ -45,7 +49,9 @@ const LAYERS: {
   { key: "rail",     label: "TRAM",     color: "#7c3aed", show: p => p.showRailNetwork,   toggle: p => p.onToggleRailNetwork()   },
   { key: "bus",      label: "BUS",      color: "#16a34a", show: p => p.showBusNetwork,    toggle: p => p.onToggleBusNetwork()    },
   { key: "political",label: "POLITICS", color: "#b45309", show: p => p.showPoliticalSites,toggle: p => p.onTogglePoliticalSites()},
-  { key: "flights",  label: "FLIGHTS",  color: "#38bdf8", show: p => p.showFlights,       toggle: p => p.onToggleFlights()       },
+  { key: "bikeflow", label: "BIKE FLOW",color: "#f97316", show: p => p.showBikeFlow,      toggle: p => p.onToggleBikeFlow()      },
+  { key: "villo",    label: "VILLO",    color: "#e11d48", show: p => p.showVillo,         toggle: p => p.onToggleVillo()         },
+  { key: "air",      label: "AIR PM2.5",color: "#94a3b8", show: p => p.showAir,           toggle: p => p.onToggleAir()           },
 ]
 
 function Divider() {

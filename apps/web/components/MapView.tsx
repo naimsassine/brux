@@ -22,7 +22,9 @@ interface Props {
   showBusNetwork: boolean
   showRailNetwork: boolean
   showPoliticalSites: boolean
-  showFlights: boolean
+  showBikeFlow: boolean
+  showVillo: boolean
+  showAir: boolean
   activeTab: TabType
   dateRange: DateRange
 }
@@ -75,50 +77,207 @@ function makeHospitalImage(cssSize: number): ImageData {
   return ctx.getImageData(0, 0, px, px)
 }
 
-// Top-down aircraft silhouette pointing north (up). Rotated at render time via icon-rotate.
-function makePlaneImage(cssSize: number): ImageData {
+// Water-fountain marker: azure disc with a white water droplet.
+function makeFountainImage(cssSize: number): ImageData {
   const px = cssSize * 2
   const canvas = document.createElement("canvas")
   canvas.width = px
   canvas.height = px
   const ctx = canvas.getContext("2d")!
-  const cx = px / 2
-  const cy = px / 2
+  const r = px / 2
 
-  ctx.fillStyle = "#38bdf8"
-
-  // Fuselage (nose at top)
+  // Disc
   ctx.beginPath()
-  ctx.moveTo(cx, cy - px * 0.44)
-  ctx.lineTo(cx + px * 0.07, cy + px * 0.28)
-  ctx.lineTo(cx - px * 0.07, cy + px * 0.28)
+  ctx.arc(r, r, r, 0, Math.PI * 2)
+  ctx.fillStyle = "#0891b2"
+  ctx.fill()
+
+  // White droplet (teardrop: pointed top, rounded bottom)
+  const dh = px * 0.26 // half-height of the drop
+  const dw = px * 0.2 // half-width
+  ctx.fillStyle = "#ffffff"
+  ctx.beginPath()
+  ctx.moveTo(r, r - dh)
+  ctx.bezierCurveTo(r + dw, r - dh * 0.1, r + dw, r + dh * 0.7, r, r + dh)
+  ctx.bezierCurveTo(r - dw, r + dh * 0.7, r - dw, r - dh * 0.1, r, r - dh)
   ctx.closePath()
   ctx.fill()
 
-  // Wings (centered, swept back slightly)
+  // White border ring
   ctx.beginPath()
-  ctx.moveTo(cx - px * 0.44, cy + px * 0.1)
-  ctx.lineTo(cx - px * 0.07, cy - px * 0.08)
-  ctx.lineTo(cx + px * 0.07, cy - px * 0.08)
-  ctx.lineTo(cx + px * 0.44, cy + px * 0.1)
-  ctx.lineTo(cx + px * 0.13, cy + px * 0.2)
-  ctx.lineTo(cx - px * 0.13, cy + px * 0.2)
-  ctx.closePath()
-  ctx.fill()
-
-  // Tail fins
-  ctx.beginPath()
-  ctx.moveTo(cx - px * 0.2, cy + px * 0.44)
-  ctx.lineTo(cx - px * 0.05, cy + px * 0.26)
-  ctx.lineTo(cx + px * 0.05, cy + px * 0.26)
-  ctx.lineTo(cx + px * 0.2, cy + px * 0.44)
-  ctx.lineTo(cx + px * 0.05, cy + px * 0.44)
-  ctx.lineTo(cx - px * 0.05, cy + px * 0.44)
-  ctx.closePath()
-  ctx.fill()
+  ctx.arc(r, r, r - 2, 0, Math.PI * 2)
+  ctx.strokeStyle = "#ffffff"
+  ctx.lineWidth = 3
+  ctx.stroke()
 
   return ctx.getImageData(0, 0, px, px)
 }
+
+// Parking marker: blue rounded square with a white "P".
+function makeParkingImage(cssSize: number): ImageData {
+  const px = cssSize * 2
+  const canvas = document.createElement("canvas")
+  canvas.width = px
+  canvas.height = px
+  const ctx = canvas.getContext("2d")!
+
+  ctx.beginPath()
+  ;(ctx as any).roundRect(1.5, 1.5, px - 3, px - 3, px * 0.24)
+  ctx.fillStyle = "#2563eb"
+  ctx.fill()
+  ctx.strokeStyle = "#ffffff"
+  ctx.lineWidth = 3
+  ctx.stroke()
+
+  ctx.fillStyle = "#ffffff"
+  ctx.font = `700 ${px * 0.62}px -apple-system, system-ui, sans-serif`
+  ctx.textAlign = "center"
+  ctx.textBaseline = "middle"
+  ctx.fillText("P", px / 2, px / 2 + px * 0.04)
+
+  return ctx.getImageData(0, 0, px, px)
+}
+
+// Glass-recycling marker: green disc with a white bottle silhouette.
+function makeGlassImage(cssSize: number): ImageData {
+  const px = cssSize * 2
+  const canvas = document.createElement("canvas")
+  canvas.width = px
+  canvas.height = px
+  const ctx = canvas.getContext("2d")!
+  const r = px / 2
+
+  ctx.beginPath()
+  ctx.arc(r, r, r, 0, Math.PI * 2)
+  ctx.fillStyle = "#16a34a"
+  ctx.fill()
+
+  // Bottle (white): neck + rounded body
+  const top = r - px * 0.26
+  ctx.fillStyle = "#ffffff"
+  ctx.beginPath()
+  ;(ctx as any).roundRect(r - px * 0.07, top, px * 0.14, px * 0.14, px * 0.02) // neck
+  ctx.fill()
+  ctx.beginPath()
+  ;(ctx as any).roundRect(r - px * 0.15, top + px * 0.12, px * 0.3, px * 0.36, px * 0.07) // body
+  ctx.fill()
+
+  ctx.beginPath()
+  ctx.arc(r, r, r - 2, 0, Math.PI * 2)
+  ctx.strokeStyle = "#ffffff"
+  ctx.lineWidth = 3
+  ctx.stroke()
+
+  return ctx.getImageData(0, 0, px, px)
+}
+
+// Public-toilet marker: violet disc with white "WC".
+function makeToiletImage(cssSize: number): ImageData {
+  const px = cssSize * 2
+  const canvas = document.createElement("canvas")
+  canvas.width = px
+  canvas.height = px
+  const ctx = canvas.getContext("2d")!
+  const r = px / 2
+
+  ctx.beginPath()
+  ctx.arc(r, r, r, 0, Math.PI * 2)
+  ctx.fillStyle = "#7c3aed"
+  ctx.fill()
+
+  ctx.fillStyle = "#ffffff"
+  ctx.font = `700 ${px * 0.42}px -apple-system, system-ui, sans-serif`
+  ctx.textAlign = "center"
+  ctx.textBaseline = "middle"
+  ctx.fillText("WC", r, r + px * 0.03)
+
+  ctx.beginPath()
+  ctx.arc(r, r, r - 2, 0, Math.PI * 2)
+  ctx.strokeStyle = "#ffffff"
+  ctx.lineWidth = 3
+  ctx.stroke()
+
+  return ctx.getImageData(0, 0, px, px)
+}
+
+// Villo availability gauge: a rectangular bar of 5 segment "lights" that fill
+// according to bikes/capacity. `idx` is the number of lit half-segments (0–10),
+// so idx=5 → 2.5 lights lit. Lit colour reflects the fill level (red→amber→green).
+function makeVilloGaugeImage(idx: number): ImageData {
+  const scale = 2
+  const cellW = 10, gap = 2, padX = 4, padY = 4, cellH = 12
+  const cssW = padX * 2 + 5 * cellW + 4 * gap // 66
+  const cssH = padY * 2 + cellH // 20
+  const W = cssW * scale, H = cssH * scale
+  const canvas = document.createElement("canvas")
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext("2d")!
+  ctx.scale(scale, scale)
+
+  // Container
+  ctx.beginPath()
+  ;(ctx as any).roundRect(0.5, 0.5, cssW - 1, cssH - 1, 4)
+  ctx.fillStyle = "#0d1117"
+  ctx.fill()
+  ctx.strokeStyle = "#243044"
+  ctx.lineWidth = 1
+  ctx.stroke()
+
+  const pct = idx / 10
+  const litColor = pct < 0.34 ? "#ef4444" : pct < 0.67 ? "#f59e0b" : "#22c55e"
+
+  for (let i = 0; i < 5; i++) {
+    const x = padX + i * (cellW + gap)
+    const y = padY
+    // Unlit base cell
+    ctx.beginPath()
+    ;(ctx as any).roundRect(x, y, cellW, cellH, 2)
+    ctx.fillStyle = "#1c2a3a"
+    ctx.fill()
+    // Lit portion (full cell, or left half for the .5 case)
+    let fillW = 0
+    if (idx >= 2 * i + 2) fillW = cellW
+    else if (idx === 2 * i + 1) fillW = cellW / 2
+    if (fillW > 0) {
+      ctx.save()
+      ctx.beginPath()
+      ;(ctx as any).roundRect(x, y, cellW, cellH, 2)
+      ctx.clip()
+      ctx.fillStyle = litColor
+      ctx.fillRect(x, y, fillW, cellH)
+      ctx.restore()
+    }
+  }
+  return ctx.getImageData(0, 0, W, H)
+}
+
+// Soft puffy cloud built from overlapping blurred circles, in `color`.
+// Rendered semi-transparent (via icon-opacity) so the map shows through.
+function makeCloudImage(cssSize: number, color: string): ImageData {
+  const px = cssSize * 2
+  const canvas = document.createElement("canvas")
+  canvas.width = px
+  canvas.height = px
+  const ctx = canvas.getContext("2d")!
+  ctx.filter = `blur(${px * 0.05}px)` // soft cloud edges
+  ctx.fillStyle = color
+  // A cluster of lobes forming a rounded cloud silhouette.
+  const lobes: [number, number, number][] = [
+    [0.34, 0.58, 0.2],
+    [0.5, 0.46, 0.26],
+    [0.66, 0.58, 0.2],
+    [0.44, 0.64, 0.18],
+    [0.58, 0.64, 0.18],
+  ]
+  for (const [x, y, r] of lobes) {
+    ctx.beginPath()
+    ctx.arc(px * x, px * y, px * r, 0, Math.PI * 2)
+    ctx.fill()
+  }
+  return ctx.getImageData(0, 0, px, px)
+}
+
 
 // Renders at 2× resolution so it appears crisp when addImage is called with { pixelRatio: 2 }
 function makeBelgianFlagImage(cssSize: number): ImageData {
@@ -151,11 +310,13 @@ function makeBelgianFlagImage(cssSize: number): ImageData {
   return ctx.getImageData(0, 0, px, px)
 }
 
-export default function MapView({ selectedCommune, onSelectCommune, typeColors, trafficColor, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, showFlights, activeTab, dateRange }: Props) {
+export default function MapView({ selectedCommune, onSelectCommune, typeColors, trafficColor, showMetro, showBusNetwork, showRailNetwork, showPoliticalSites, showBikeFlow, showVillo, showAir, activeTab, dateRange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const metroIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const flightsIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const bikeFlowIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const villoIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const airIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const trafficIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const itemsAbortRef = useRef<AbortController | null>(null)
   const PopupCtorRef = useRef<any>(null)
@@ -326,6 +487,165 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
             .addTo(map)
           pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
         })
+
+        // Drinking-water fountains (City of Brussels) — always visible, no toggle
+        map.addSource("water-fountains", { type: "geojson", data: "/water-fountains.geojson" })
+        map.addImage("fountain-icon", makeFountainImage(15), { pixelRatio: 2 })
+        map.addLayer({
+          id: "fountain-icons",
+          type: "symbol",
+          source: "water-fountains",
+          layout: {
+            "icon-image": "fountain-icon",
+            "icon-size": 1,
+            "icon-allow-overlap": false,
+          },
+        })
+
+        let fountainPopup: any = null
+        const fountainHtml = (p: any) => {
+          const loc = [p.address_fr, p.territory_fr].filter(Boolean).join(" · ")
+          return `
+              <div style="font-family:ui-monospace,monospace;padding:2px 0">
+                <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#22d3ee;margin-bottom:6px">💧 DRINKING WATER</div>
+                <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:3px;font-family:-apple-system,sans-serif">${escapeHtml(p.name_fr ?? "")}</div>
+                <div style="font-size:10px;color:#6e7f96;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(loc)}</div>
+                <div style="font-size:9px;color:#3d4f64;text-transform:uppercase;letter-spacing:.08em">${escapeHtml(p.access_type_fr ?? "")} · free</div>
+              </div>`
+        }
+        map.on("mouseenter", "fountain-icons", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          map.getCanvas().style.cursor = "pointer"
+          if (pinnedPopupRef.current) return
+          const p = e.features[0].properties
+          fountainPopup?.remove()
+          fountainPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "230px" })
+            .setLngLat(e.lngLat)
+            .setHTML(fountainHtml(p))
+            .addTo(map)
+        })
+        map.on("mouseleave", "fountain-icons", () => {
+          map.getCanvas().style.cursor = ""
+          if (pinnedPopupRef.current) return
+          fountainPopup?.remove()
+          fountainPopup = null
+        })
+        map.on("click", "fountain-icons", (e: any) => {
+          if (!e.features?.length || !PopupCtorRef.current) return
+          clickHandledRef.current = true
+          fountainPopup?.remove()
+          fountainPopup = null
+          pinnedPopupRef.current?.remove()
+          const p = e.features[0].properties
+          pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 12, maxWidth: "230px" })
+            .setLngLat(e.lngLat)
+            .setHTML(fountainHtml(p))
+            .addTo(map)
+          pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
+        })
+
+        // ── Simple always-on POI layers (parking / glass banks / toilets) ──
+        // Each: canvas icon + geojson source + symbol layer + hover/click popups.
+        const addPoiLayer = (opts: {
+          id: string
+          data: string
+          image: ImageData
+          iconSize?: number
+          minzoom?: number
+          html: (p: any) => string
+        }) => {
+          map.addSource(opts.id, { type: "geojson", data: opts.data })
+          map.addImage(`${opts.id}-icon`, opts.image, { pixelRatio: 2 })
+          map.addLayer({
+            id: `${opts.id}-icons`,
+            type: "symbol",
+            source: opts.id,
+            ...(opts.minzoom ? { minzoom: opts.minzoom } : {}),
+            layout: {
+              "icon-image": `${opts.id}-icon`,
+              "icon-size": opts.iconSize ?? 1,
+              "icon-allow-overlap": false,
+            },
+          })
+
+          let poiPopup: any = null
+          map.on("mouseenter", `${opts.id}-icons`, (e: any) => {
+            if (!e.features?.length || !PopupCtorRef.current) return
+            map.getCanvas().style.cursor = "pointer"
+            if (pinnedPopupRef.current) return
+            poiPopup?.remove()
+            poiPopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "240px" })
+              .setLngLat(e.lngLat)
+              .setHTML(opts.html(e.features[0].properties))
+              .addTo(map)
+          })
+          map.on("mouseleave", `${opts.id}-icons`, () => {
+            map.getCanvas().style.cursor = ""
+            if (pinnedPopupRef.current) return
+            poiPopup?.remove()
+            poiPopup = null
+          })
+          map.on("click", `${opts.id}-icons`, (e: any) => {
+            if (!e.features?.length || !PopupCtorRef.current) return
+            clickHandledRef.current = true
+            poiPopup?.remove()
+            poiPopup = null
+            pinnedPopupRef.current?.remove()
+            pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 12, maxWidth: "240px" })
+              .setLngLat(e.lngLat)
+              .setHTML(opts.html(e.features[0].properties))
+              .addTo(map)
+            pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
+          })
+        }
+
+        const poiHeader = (icon: string, label: string, color: string) =>
+          `<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:${color};margin-bottom:6px">${icon} ${label}</div>`
+        const poiTitle = (t: string) =>
+          `<div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:3px;font-family:-apple-system,sans-serif">${escapeHtml(t)}</div>`
+        const poiSub = (t: string) =>
+          t ? `<div style="font-size:10px;color:#6e7f96;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(t)}</div>` : ""
+        const poiMeta = (t: string) =>
+          t ? `<div style="font-size:9px;color:#3d4f64;text-transform:uppercase;letter-spacing:.08em">${escapeHtml(t)}</div>` : ""
+
+        // Public parkings
+        addPoiLayer({
+          id: "parking",
+          data: "/parkings.geojson",
+          image: makeParkingImage(15),
+          html: (p) => {
+            const cap = p.capacity ? `${p.capacity} spaces` : ""
+            const disabled = p.disabledcapacity > 0 ? `♿ ${p.disabledcapacity}` : ""
+            const meta = [p.operator_fr, cap, disabled].filter(Boolean).join(" · ")
+            return `<div style="font-family:ui-monospace,monospace;padding:2px 0">
+              ${poiHeader("🅿", "Parking", "#60a5fa")}${poiTitle(p.name_fr ?? "")}${poiSub(p.adressee ?? "")}${poiMeta(meta)}</div>`
+          },
+        })
+
+        // Glass recycling banks (minzoom keeps the 1000+ pins from carpeting the city)
+        addPoiLayer({
+          id: "glass",
+          data: "/glass-banks.geojson",
+          image: makeGlassImage(12),
+          minzoom: 13,
+          html: (p) => {
+            const loc = [p.address_fr, p.municipality_fr].filter(Boolean).join(" · ")
+            return `<div style="font-family:ui-monospace,monospace;padding:2px 0">
+              ${poiHeader("♺", "Glass recycling", "#4ade80")}${poiTitle(p.category_fr ?? "Glass bank")}${poiSub(loc)}</div>`
+          },
+        })
+
+        // Public toilets
+        addPoiLayer({
+          id: "toilet",
+          data: "/toilets.geojson",
+          image: makeToiletImage(14),
+          html: (p) => {
+            const loc = [p.address_fr, p.municipality_fr].filter(Boolean).join(" · ")
+            return `<div style="font-family:ui-monospace,monospace;padding:2px 0">
+              ${poiHeader("🚻", "Public toilet", "#a78bfa")}${poiTitle(p.address_fr ?? "Public toilet")}${poiSub(p.territory_fr ?? p.municipality_fr ?? "")}${poiMeta(p.openinghours ?? "")}</div>`
+          },
+        })
       })
 
       map.on("click", "commune-fill", (e: any) => {
@@ -339,6 +659,7 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
 
     return () => {
       stopMetroAnimation()
+      stopAirAnimation()
       map?.remove()
       mapRef.current = null
     }
@@ -429,40 +750,101 @@ export default function MapView({ selectedCommune, onSelectCommune, typeColors, 
     }
   }, [showMetro])
 
-  // Flights layer: poll every 15 seconds
+
+  // Bike/scooter flow heatmap: poll once an hour (data isn't more granular than we need)
   useEffect(() => {
-    if (flightsIntervalRef.current) {
-      clearInterval(flightsIntervalRef.current)
-      flightsIntervalRef.current = null
+    if (bikeFlowIntervalRef.current) {
+      clearInterval(bikeFlowIntervalRef.current)
+      bikeFlowIntervalRef.current = null
     }
 
-    if (!showFlights) {
-      if (mapRef.current?.isStyleLoaded()) clearFlightLayers(mapRef.current)
+    if (!showBikeFlow) {
+      if (mapRef.current?.isStyleLoaded()) clearBikeFlowLayers(mapRef.current)
       return
     }
 
     const run = () => {
-      if (mapRef.current?.isStyleLoaded()) fetchAndRenderFlights(mapRef.current, PopupCtorRef)
+      if (mapRef.current?.isStyleLoaded()) fetchAndRenderBikeFlow(mapRef.current, PopupCtorRef, pinnedPopupRef, clickHandledRef)
     }
 
     if (!mapRef.current) {
       const wait = setInterval(() => {
         if (mapRef.current?.isStyleLoaded()) {
           clearInterval(wait)
-          fetchAndRenderFlights(mapRef.current, PopupCtorRef)
-          flightsIntervalRef.current = setInterval(() => fetchAndRenderFlights(mapRef.current, PopupCtorRef), 15000)
+          run()
+          bikeFlowIntervalRef.current = setInterval(run, 3600000)
         }
       }, 200)
       return () => clearInterval(wait)
     }
 
     run()
-    flightsIntervalRef.current = setInterval(run, 15000)
+    bikeFlowIntervalRef.current = setInterval(run, 3600000)
 
     return () => {
-      if (flightsIntervalRef.current) clearInterval(flightsIntervalRef.current)
+      if (bikeFlowIntervalRef.current) clearInterval(bikeFlowIntervalRef.current)
     }
-  }, [showFlights])
+  }, [showBikeFlow])
+
+  // Villo bike-share availability: poll every 60s (availability changes fast)
+  useEffect(() => {
+    if (villoIntervalRef.current) {
+      clearInterval(villoIntervalRef.current)
+      villoIntervalRef.current = null
+    }
+    if (!showVillo) {
+      if (mapRef.current?.isStyleLoaded()) clearVilloLayers(mapRef.current)
+      return
+    }
+    const run = () => {
+      if (mapRef.current?.isStyleLoaded()) fetchAndRenderVillo(mapRef.current, PopupCtorRef, pinnedPopupRef, clickHandledRef)
+    }
+    if (!mapRef.current) {
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) {
+          clearInterval(wait)
+          run()
+          villoIntervalRef.current = setInterval(run, 60000)
+        }
+      }, 200)
+      return () => clearInterval(wait)
+    }
+    run()
+    villoIntervalRef.current = setInterval(run, 60000)
+    return () => {
+      if (villoIntervalRef.current) clearInterval(villoIntervalRef.current)
+    }
+  }, [showVillo])
+
+  // Air quality (PM2.5) clouds: poll every 10 min (data is hourly)
+  useEffect(() => {
+    if (airIntervalRef.current) {
+      clearInterval(airIntervalRef.current)
+      airIntervalRef.current = null
+    }
+    if (!showAir) {
+      if (mapRef.current?.isStyleLoaded()) clearAirLayers(mapRef.current)
+      return
+    }
+    const run = () => {
+      if (mapRef.current?.isStyleLoaded()) fetchAndRenderAir(mapRef.current, PopupCtorRef, pinnedPopupRef, clickHandledRef)
+    }
+    if (!mapRef.current) {
+      const wait = setInterval(() => {
+        if (mapRef.current?.isStyleLoaded()) {
+          clearInterval(wait)
+          run()
+          airIntervalRef.current = setInterval(run, 600000)
+        }
+      }, 200)
+      return () => clearInterval(wait)
+    }
+    run()
+    airIntervalRef.current = setInterval(run, 600000)
+    return () => {
+      if (airIntervalRef.current) clearInterval(airIntervalRef.current)
+    }
+  }, [showAir])
 
   // Rail (tram + metro) network layer
   useEffect(() => {
@@ -813,8 +1195,6 @@ const ABOVE_NETWORK_LAYERS = [
   "metro-vehicles-pulse",
   "metro-vehicles",
   "metro-vehicle-labels",
-  "flights",
-  "flight-labels",
 ]
 function lowestCustomLayer(map: any): string | undefined {
   return ABOVE_NETWORK_LAYERS.find((id) => map.getLayer(id))
@@ -1004,113 +1384,365 @@ function renderMetroLayers(map: any, lines: MetroLine[]) {
   startMetroAnimation(map)
 }
 
-function clearFlightLayers(map: any) {
-  for (const id of ["flights", "flight-labels"]) {
-    if (map.getLayer(id)) map.removeLayer(id)
-  }
-  if (map.getSource("flights")) map.removeSource("flights")
+// ── Villo bike-share: rectangular count badges, coloured by availability ──
+function clearVilloLayers(map: any) {
+  if (map.getLayer("villo-badges")) map.removeLayer("villo-badges")
+  if (map.getSource("villo")) map.removeSource("villo")
 }
 
-async function fetchAndRenderFlights(
+async function fetchAndRenderVillo(
   map: any,
   PopupCtorRef: React.MutableRefObject<any>,
+  pinnedPopupRef: React.MutableRefObject<any>,
+  clickHandledRef: React.MutableRefObject<boolean>,
 ) {
   try {
-    const res = await fetch("/api/flights")
+    const res = await fetch("/api/villo")
     if (!res.ok) return
-    const flights: any[] = await res.json()
+    const stations: any[] = await res.json()
 
-    const features = flights.map((f) => ({
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [f.lng, f.lat] },
-      properties: {
-        icao24: f.icao24,
-        callsign: f.callsign,
-        originCountry: f.originCountry,
-        altitudeM: f.altitudeM,
-        velocityMs: f.velocityMs,
-        heading: f.heading,
-        verticalRateMs: f.verticalRateMs,
-      },
-    }))
-
+    const features = stations.map((s) => {
+      // fraction of capacity that's available → 0–10 lit half-segments (idx=5 ⇒ 2.5 lights)
+      const ratio = s.capacity > 0 ? s.bikes / s.capacity : 0
+      const gaugeIdx = Math.max(0, Math.min(10, Math.round(ratio * 10)))
+      return {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [s.lng, s.lat] },
+        properties: { ...s, gaugeIdx },
+      }
+    })
     const geojson = { type: "FeatureCollection", features }
 
-    if (map.getSource("flights")) {
-      map.getSource("flights").setData(geojson)
+    if (map.getSource("villo")) {
+      map.getSource("villo").setData(geojson)
       return
     }
 
-    if (!map.hasImage("plane-icon")) {
-      map.addImage("plane-icon", makePlaneImage(18), { pixelRatio: 2 })
+    // 11 gauge frames: villo-gauge-0 (empty) … villo-gauge-10 (full)
+    for (let i = 0; i <= 10; i++) {
+      const id = `villo-gauge-${i}`
+      if (!map.hasImage(id)) map.addImage(id, makeVilloGaugeImage(i), { pixelRatio: 2 })
     }
 
-    map.addSource("flights", { type: "geojson", data: geojson })
+    map.addSource("villo", { type: "geojson", data: geojson })
     map.addLayer({
-      id: "flights",
+      id: "villo-badges",
       type: "symbol",
-      source: "flights",
+      source: "villo",
+      minzoom: 13,
       layout: {
-        "icon-image": "plane-icon",
-        "icon-size": 1,
-        "icon-rotate": ["get", "heading"] as any,
-        "icon-rotation-alignment": "map" as const,
+        "icon-image": ["concat", "villo-gauge-", ["to-string", ["get", "gaugeIdx"]]] as any,
+        "icon-size": 0.9,
+        "icon-allow-overlap": false,
+      },
+    })
+
+    const villoHtml = (p: any) => `
+      <div style="font-family:ui-monospace,monospace;padding:2px 0">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#fb7185;margin-bottom:6px">🚲 VILLO STATION</div>
+        <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(p.name ?? "")}</div>
+        <div style="font-size:11px;color:#c9d1d9;font-family:-apple-system,sans-serif">
+          <b style="color:#4ade80">${p.bikes}</b> bikes · <b style="color:#60a5fa">${p.freeStands}</b> free docks
+        </div>
+        <div style="font-size:9px;color:#6e7f96;margin-top:2px;text-transform:uppercase;letter-spacing:.08em">${escapeHtml(p.address ?? "")} · cap ${p.capacity}</div>
+      </div>`
+    let villoPopup: any = null
+    map.on("mouseenter", "villo-badges", (e: any) => {
+      if (!e.features?.length || !PopupCtorRef.current) return
+      map.getCanvas().style.cursor = "pointer"
+      if (pinnedPopupRef.current) return
+      villoPopup?.remove()
+      villoPopup = new PopupCtorRef.current({ closeButton: false, offset: 10, maxWidth: "230px" })
+        .setLngLat(e.lngLat).setHTML(villoHtml(e.features[0].properties)).addTo(map)
+    })
+    map.on("mouseleave", "villo-badges", () => {
+      map.getCanvas().style.cursor = ""
+      if (pinnedPopupRef.current) return
+      villoPopup?.remove()
+      villoPopup = null
+    })
+    map.on("click", "villo-badges", (e: any) => {
+      if (!e.features?.length || !PopupCtorRef.current) return
+      clickHandledRef.current = true
+      villoPopup?.remove()
+      villoPopup = null
+      pinnedPopupRef.current?.remove()
+      pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 10, maxWidth: "230px" })
+        .setLngLat(e.lngLat).setHTML(villoHtml(e.features[0].properties)).addTo(map)
+      pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
+    })
+  } catch (e) {
+    console.error("[villo]", e)
+  }
+}
+
+// ── Air quality (PM2.5): drifting, breathing coloured clouds over each station ──
+let airAnimId: number | null = null
+function startAirAnimation(map: any) {
+  if (airAnimId != null) return
+  const loop = (ts: number) => {
+    if (!map.getLayer || !map.getLayer("air-clouds")) { airAnimId = null; return }
+    const t = ts / 1000
+    map.setPaintProperty("air-clouds", "icon-translate", [Math.sin(t * 0.5) * 5, Math.cos(t * 0.33) * 4])
+    map.setPaintProperty("air-clouds", "icon-opacity", 0.5 + Math.sin(t * 0.8) * 0.08)
+    airAnimId = requestAnimationFrame(loop)
+  }
+  airAnimId = requestAnimationFrame(loop)
+}
+function stopAirAnimation() {
+  if (airAnimId != null) { cancelAnimationFrame(airAnimId); airAnimId = null }
+}
+
+function clearAirLayers(map: any) {
+  stopAirAnimation()
+  if (map.getLayer("air-clouds")) map.removeLayer("air-clouds")
+  if (map.getSource("air")) map.removeSource("air")
+}
+
+function airQualityLabel(v: number): string {
+  if (v <= 10) return "Good"
+  if (v <= 20) return "Fair"
+  if (v <= 25) return "Moderate"
+  if (v <= 50) return "Poor"
+  return "Very poor"
+}
+
+async function fetchAndRenderAir(
+  map: any,
+  PopupCtorRef: React.MutableRefObject<any>,
+  pinnedPopupRef: React.MutableRefObject<any>,
+  clickHandledRef: React.MutableRefObject<boolean>,
+) {
+  try {
+    const res = await fetch("/api/air-quality")
+    if (!res.ok) return
+    const stations: any[] = await res.json()
+
+    const features = stations.map((s) => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [s.lng, s.lat] },
+      properties: { ...s },
+    }))
+    const geojson = { type: "FeatureCollection", features }
+
+    if (map.getSource("air")) {
+      map.getSource("air").setData(geojson)
+      startAirAnimation(map)
+      return
+    }
+
+    // green = clean, grey = moderate, dark = polluted
+    if (!map.hasImage("cloud-green")) map.addImage("cloud-green", makeCloudImage(60, "#4ade80"), { pixelRatio: 2 })
+    if (!map.hasImage("cloud-grey")) map.addImage("cloud-grey", makeCloudImage(60, "#94a3b8"), { pixelRatio: 2 })
+    if (!map.hasImage("cloud-dark")) map.addImage("cloud-dark", makeCloudImage(60, "#334155"), { pixelRatio: 2 })
+
+    map.addSource("air", { type: "geojson", data: geojson })
+    map.addLayer({
+      id: "air-clouds",
+      type: "symbol",
+      source: "air",
+      layout: {
+        // ≤10 µg/m³ green, ≤25 grey, else dark
+        "icon-image": ["step", ["get", "value"], "cloud-green", 10, "cloud-grey", 25, "cloud-dark"] as any,
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 9, 0.8, 12, 1.7, 15, 3.2] as any,
         "icon-allow-overlap": true,
         "icon-ignore-placement": true,
       },
-    })
-    map.addLayer({
-      id: "flight-labels",
-      type: "symbol",
-      source: "flights",
-      layout: {
-        "text-field": ["get", "callsign"] as any,
-        "text-size": 8,
-        "text-font": ["Noto Sans Regular"],
-        "text-anchor": "top" as const,
-        "text-offset": [0, 1],
-        "text-optional": true,
-        "text-allow-overlap": false,
-      },
       paint: {
-        "text-color": "#38bdf8",
-        "text-halo-color": "#080c12",
-        "text-halo-width": 1,
+        "icon-opacity": 0.5,
+        "icon-translate-anchor": "viewport",
+      },
+    }, map.getLayer("police-icons") ? "police-icons" : undefined)
+
+    const airHtml = (p: any) => `
+      <div style="font-family:ui-monospace,monospace;padding:2px 0">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#94a3b8;margin-bottom:6px">☁ AIR QUALITY · PM2.5</div>
+        <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(p.name ?? "")}</div>
+        <div style="font-size:11px;color:#c9d1d9;font-family:-apple-system,sans-serif">
+          <b>${p.value}</b> µg/m³ · ${escapeHtml(airQualityLabel(Number(p.value)))}
+        </div>
+      </div>`
+    let airPopup: any = null
+    map.on("mouseenter", "air-clouds", (e: any) => {
+      if (!e.features?.length || !PopupCtorRef.current) return
+      map.getCanvas().style.cursor = "pointer"
+      if (pinnedPopupRef.current) return
+      airPopup?.remove()
+      airPopup = new PopupCtorRef.current({ closeButton: false, offset: 8, maxWidth: "230px" })
+        .setLngLat(e.lngLat).setHTML(airHtml(e.features[0].properties)).addTo(map)
+    })
+    map.on("mouseleave", "air-clouds", () => {
+      map.getCanvas().style.cursor = ""
+      if (pinnedPopupRef.current) return
+      airPopup?.remove()
+      airPopup = null
+    })
+    map.on("click", "air-clouds", (e: any) => {
+      if (!e.features?.length || !PopupCtorRef.current) return
+      clickHandledRef.current = true
+      airPopup?.remove()
+      airPopup = null
+      pinnedPopupRef.current?.remove()
+      pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 8, maxWidth: "230px" })
+        .setLngLat(e.lngLat).setHTML(airHtml(e.features[0].properties)).addTo(map)
+      pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
+    })
+
+    startAirAnimation(map)
+  } catch (e) {
+    console.error("[air]", e)
+  }
+}
+
+function clearBikeFlowLayers(map: any) {
+  for (const id of ["bike-flow-heat", "bike-flow-points", "bike-flow-labels"]) {
+    if (map.getLayer(id)) map.removeLayer(id)
+  }
+  if (map.getSource("bike-flow")) map.removeSource("bike-flow")
+}
+
+// Hybrid render of the Brussels-Mobility bike/scooter counters:
+//   • zoomed out → a smooth heat glow weighted by last-hour passages
+//   • zoomed in  → labelled hotspot circles (radius + colour by count)
+// The two crossfade around zoom 13–15. Count breakpoints (~0/30/80/170) come
+// from the live data range (hourly counts run ~14–171).
+async function fetchAndRenderBikeFlow(
+  map: any,
+  PopupCtorRef: React.MutableRefObject<any>,
+  pinnedPopupRef: React.MutableRefObject<any>,
+  clickHandledRef: React.MutableRefObject<boolean>,
+) {
+  try {
+    const res = await fetch("/api/bike-flow")
+    if (!res.ok) return
+    const sensors: any[] = await res.json()
+
+    const features = sensors.map((s) => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [s.lng, s.lat] },
+      properties: {
+        feature: s.feature,
+        address: s.address,
+        commune: s.commune,
+        hourCnt: s.hourCnt,
+        dayCnt: s.dayCnt,
+        yearCnt: s.yearCnt,
+      },
+    }))
+    const geojson = { type: "FeatureCollection", features }
+
+    if (map.getSource("bike-flow")) {
+      map.getSource("bike-flow").setData(geojson)
+      return
+    }
+
+    map.addSource("bike-flow", { type: "geojson", data: geojson })
+
+    // Heat glow — visible when zoomed out, fades away by ~zoom 15
+    map.addLayer({
+      id: "bike-flow-heat",
+      type: "heatmap",
+      source: "bike-flow",
+      maxzoom: 16,
+      paint: {
+        "heatmap-weight": ["interpolate", ["linear"], ["get", "hourCnt"], 0, 0, 30, 0.35, 80, 0.7, 170, 1],
+        "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 10, 0.9, 15, 2.2],
+        "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 10, 16, 13, 30, 15, 48],
+        "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.9, 15, 0],
+        "heatmap-color": [
+          "interpolate", ["linear"], ["heatmap-density"],
+          0, "rgba(8,12,18,0)",
+          0.15, "rgba(34,211,238,0.45)",  // cyan
+          0.4, "rgba(74,222,128,0.7)",    // green
+          0.7, "rgba(250,204,21,0.85)",   // yellow
+          1, "rgba(239,68,68,0.95)",      // red
+        ],
       },
     })
 
-    let flightPopup: any = null
-    map.on("mouseenter", "flights", (e: any) => {
+    // Hotspot circles — fade in as the heat fades out
+    map.addLayer({
+      id: "bike-flow-points",
+      type: "circle",
+      source: "bike-flow",
+      paint: {
+        "circle-radius": [
+          "interpolate", ["linear"], ["zoom"],
+          12, ["interpolate", ["linear"], ["get", "hourCnt"], 0, 3, 170, 11],
+          17, ["interpolate", ["linear"], ["get", "hourCnt"], 0, 7, 170, 30],
+        ],
+        "circle-color": [
+          "interpolate", ["linear"], ["get", "hourCnt"],
+          0, "#22d3ee", 30, "#4ade80", 80, "#facc15", 170, "#ef4444",
+        ],
+        "circle-opacity": ["interpolate", ["linear"], ["zoom"], 13.5, 0, 15, 0.9],
+        "circle-stroke-width": 1.5,
+        "circle-stroke-color": "#0b0f16",
+        "circle-stroke-opacity": ["interpolate", ["linear"], ["zoom"], 13.5, 0, 15, 0.9],
+      },
+    })
+
+    // Count labels on the circles
+    map.addLayer({
+      id: "bike-flow-labels",
+      type: "symbol",
+      source: "bike-flow",
+      minzoom: 13.5,
+      layout: {
+        "text-field": ["to-string", ["get", "hourCnt"]],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 14, 9, 17, 13],
+        "text-allow-overlap": false,
+      },
+      paint: {
+        "text-color": "#ffffff",
+        "text-halo-color": "#0b0f16",
+        "text-halo-width": 1.4,
+        "text-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0, 15, 1],
+      },
+    })
+
+    const bikeHtml = (p: any) => {
+      const loc = [p.address, p.commune].filter(Boolean).join(" · ")
+      return `
+        <div style="font-family:ui-monospace,monospace;padding:2px 0">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#f97316;margin-bottom:6px">🚲 BIKE / SCOOTER FLOW</div>
+          <div style="font-size:12px;font-weight:600;color:#c9d1d9;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(loc || p.feature)}</div>
+          <div style="font-size:11px;color:#c9d1d9;font-family:-apple-system,sans-serif">
+            <b style="color:#f97316">${p.hourCnt}</b> in the last hour
+          </div>
+          <div style="font-size:9px;color:#6e7f96;margin-top:2px;text-transform:uppercase;letter-spacing:.08em">
+            ${Number(p.dayCnt).toLocaleString()} today · ${Number(p.yearCnt).toLocaleString()} this year
+          </div>
+        </div>`
+    }
+    let bikePopup: any = null
+    map.on("mouseenter", "bike-flow-points", (e: any) => {
       if (!e.features?.length || !PopupCtorRef.current) return
       map.getCanvas().style.cursor = "pointer"
-      const p = e.features[0].properties
-      const altFt = Math.round((p.altitudeM ?? 0) * 3.28084).toLocaleString()
-      const kts = Math.round((p.velocityMs ?? 0) * 1.94384)
-      const vr = p.verticalRateMs != null
-        ? `${p.verticalRateMs >= 0 ? "↑" : "↓"} ${Math.abs(Math.round(p.verticalRateMs * 196.85))} fpm`
-        : null
-      flightPopup?.remove()
-      flightPopup = new PopupCtorRef.current({ closeButton: false, offset: 14, maxWidth: "240px" })
-        .setLngLat(e.lngLat)
-        .setHTML(`
-          <div style="font-family:ui-monospace,monospace;padding:2px 0">
-            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#38bdf8;margin-bottom:6px">
-              FLIGHT · ${escapeHtml(p.callsign || p.icao24)}
-            </div>
-            <div style="font-size:11px;color:#c9d1d9;margin-bottom:4px;font-family:-apple-system,sans-serif">${escapeHtml(p.originCountry)}</div>
-            <div style="font-size:10px;color:#6e7f96;font-family:-apple-system,sans-serif">
-              ${altFt} ft · ${kts} kts${vr ? ` · ${vr}` : ""}
-            </div>
-          </div>`)
-        .addTo(map)
+      if (pinnedPopupRef.current) return
+      bikePopup?.remove()
+      bikePopup = new PopupCtorRef.current({ closeButton: false, offset: 12, maxWidth: "250px" })
+        .setLngLat(e.lngLat).setHTML(bikeHtml(e.features[0].properties)).addTo(map)
     })
-    map.on("mouseleave", "flights", () => {
+    map.on("mouseleave", "bike-flow-points", () => {
       map.getCanvas().style.cursor = ""
-      flightPopup?.remove()
-      flightPopup = null
+      if (pinnedPopupRef.current) return
+      bikePopup?.remove()
+      bikePopup = null
+    })
+    map.on("click", "bike-flow-points", (e: any) => {
+      if (!e.features?.length || !PopupCtorRef.current) return
+      clickHandledRef.current = true
+      bikePopup?.remove()
+      bikePopup = null
+      pinnedPopupRef.current?.remove()
+      pinnedPopupRef.current = new PopupCtorRef.current({ closeButton: true, offset: 12, maxWidth: "250px" })
+        .setLngLat(e.lngLat).setHTML(bikeHtml(e.features[0].properties)).addTo(map)
+      pinnedPopupRef.current.on("close", () => { pinnedPopupRef.current = null })
     })
   } catch (e) {
-    console.error("[flights]", e)
+    console.error("[bike-flow]", e)
   }
 }
 
